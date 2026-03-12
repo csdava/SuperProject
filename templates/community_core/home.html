@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}首页 - 智慧社区管理系统{% endblock %}
+{% block content %}
+<h2>欢迎使用智慧社区管理系统</h2>
+<p>请先 <a href="{% url 'accounts:login_select_role' %}">登录</a> 或 <a href="{% url 'accounts:register' %}">注册</a> 后使用系统。户主/维修人员注册后需管理员审批通过才能登录。</p>
+<p>当前已完成：登录/注册（户主、管理员、维修人员三种身份）、审批流程、数据库与目录结构。</p>
+<ul>
+    <li>社区基础管理（住户、楼栋）</li>
+    <li>物业收费系统</li>
+    <li>报事报修管理</li>
+    <li>访客与出入管理</li>
+    <li>智慧安防监控</li>
+    <li>社区生活服务</li>
+    <li>车辆管理</li>
+    <li>设备设施管理</li>
+</ul>
+{% if user.is_authenticated and request.session.login_role == 'admin' %}
+<p><a href="/admin/">Django 系统配置与用户审批</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}选择身份 - 登录{% endblock %}
+{% block content %}
+<h2>登录</h2>
+<p>请先选择您的身份，再输入用户名和密码。</p>
+<form method="post" action="{% url 'accounts:login_select_role' %}">
+  {% csrf_token %}
+  <div class="role-select">
+    <label class="role-option">
+      <input type="radio" name="role" value="household" required>
+      <span class="role-label">户主</span>
+      <span class="role-desc">业主/住户，查询费用、报修、访客等</span>
+    </label>
+    <label class="role-option">
+      <input type="radio" name="role" value="admin">
+      <span class="role-label">管理员</span>
+      <span class="role-desc">物业管理员，审批、配置、报表</span>
+    </label>
+    <label class="role-option">
+      <input type="radio" name="role" value="maintenance">
+      <span class="role-label">维修人员</span>
+      <span class="role-desc">接单维修、巡检上报</span>
+    </label>
+  </div>
+  <button type="submit">下一步：输入账号密码</button>
+</form>
+<p>还没有账号？<a href="{% url 'accounts:register' %}">立即注册</a>（仅户主、维修人员可注册，需管理员审批后登录）</p>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}维修人员工作台{% endblock %}
+{% block content %}
+<h2>维修人员工作台</h2>
+<p>欢迎，{{ user.username }}。您已以「维修人员」身份登录。</p>
+
+<div class="dashboard-layout">
+  <aside class="dashboard-menu">
+    <h3>功能菜单</h3>
+    <ul>
+      <li>
+        <strong>我的工单</strong>
+        <ul>
+          <li><a href="#">待处理工单</a></li>
+          <li><a href="#">处理中工单</a></li>
+          <li><a href="#">已完成工单</a></li>
+          <li><a href="#">工单统计</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>接单处理</strong>
+        <ul>
+          <li><a href="#">自动接单</a></li>
+          <li><a href="#">手动接单</a></li>
+          <li><a href="#">工单转派</a></li>
+          <li><a href="#">工单超时提醒</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>维修管理</strong>
+        <ul>
+          <li><a href="#">维修进度上报</a></li>
+          <li><a href="#">配件使用登记</a></li>
+          <li><a href="#">完工确认</a></li>
+          <li><a href="#">费用结算（如有）</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>巡检任务</strong>
+        <ul>
+          <li><a href="#">巡检计划</a></li>
+          <li><a href="#">巡检打卡</a></li>
+          <li><a href="#">异常上报</a></li>
+          <li><a href="#">巡检记录</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>物料管理</strong>
+        <ul>
+          <li><a href="#">物料领用</a></li>
+          <li><a href="#">物料归还</a></li>
+          <li><a href="#">库存查询</a></li>
+          <li><a href="#">报废申请</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>工作统计</strong>
+        <ul>
+          <li><a href="#">工时统计</a></li>
+          <li><a href="#">工单完成率</a></li>
+          <li><a href="#">用户评价</a></li>
+          <li><a href="#">绩效排名</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>个人中心</strong>
+        <ul>
+          <li><a href="#">工作排班</a></li>
+          <li><a href="#">工资单</a></li>
+          <li><a href="#">技能认证</a></li>
+          <li><a href="#">培训资料</a></li>
+        </ul>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="dashboard-content">
+    <h3>快捷入口</h3>
+    <p>当前维修人员端尚在搭建中，以上菜单为后续实现的业务功能结构。</p>
+    <ul>
+      <li>优先计划：我的工单、接单处理、维修管理、巡检任务。</li>
+      <li>后续迭代：物料管理、工作统计、个人中心细节功能。</li>
+    </ul>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}输入账号密码 - 登录{% endblock %}
+{% block content %}
+<h2>登录 - {{ role_display }}</h2>
+<p>您正在以「{{ role_display }}」身份登录。</p>
+<form method="post" action="{% url 'accounts:login_form' %}">
+  {% csrf_token %}
+  <p>
+    <label for="id_username">用户名</label>
+    <input type="text" name="username" id="id_username" required autofocus>
+  </p>
+  <p>
+    <label for="id_password">密码</label>
+    <input type="password" name="password" id="id_password" required>
+  </p>
+  <button type="submit">登录</button>
+</form>
+<p><a href="{% url 'accounts:login_select_role' %}">返回重新选择身份</a></p>
+{% endblock %}

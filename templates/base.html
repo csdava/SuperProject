@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}智慧社区管理系统{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/site.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>智慧社区管理系统</h1>
+        <nav>
+            <a href="{% url 'community_core:home' %}">首页</a>
+            {% if user.is_authenticated %}
+                {% if request.session.login_role == 'household' %}
+                    <a href="{% url 'accounts:dashboard_household' %}">户主工作台</a>
+                {% elif request.session.login_role == 'maintenance' %}
+                    <a href="{% url 'accounts:dashboard_maintenance' %}">维修工作台</a>
+                {% elif request.session.login_role == 'admin' %}
+                    <a href="{% url 'accounts:dashboard_admin' %}">管理后台</a>
+                    <a href="/admin/">系统配置</a>
+                {% else %}
+                    <a href="{% url 'accounts:login_select_role' %}">选择身份</a>
+                {% endif %}
+                <span>{{ user.username }}</span>
+                <a href="{% url 'accounts:logout' %}">退出</a>
+            {% else %}
+                <a href="{% url 'accounts:login_select_role' %}">登录</a>
+                <a href="{% url 'accounts:register' %}">注册</a>
+            {% endif %}
+        </nav>
+    </header>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>数据库：SQLite | 后端：Django | 前端：HTML</p>
+    </footer>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

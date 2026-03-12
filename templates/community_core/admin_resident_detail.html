@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}住户详情 - 管理员{% endblock %}
+{% block content %}
+<h2>住户详情</h2>
+
+<p><a href="{% url 'community_core:admin_resident_list' %}">&laquo; 返回住户列表</a></p>
+
+<section>
+  <h3>基础信息</h3>
+  <table class="simple-table">
+    <tbody>
+      <tr><th>姓名</th><td>{{ resident.name }}</td></tr>
+      <tr><th>联系电话</th><td>{{ resident.phone|default:"-" }}</td></tr>
+      <tr><th>证件号</th><td>{{ resident.id_number|default:"-" }}</td></tr>
+      <tr><th>是否户主</th><td>{% if resident.is_householder %}是{% else %}否{% endif %}</td></tr>
+      <tr><th>与户主关系</th><td>{{ resident.relation_to_householder|default:"-" }}</td></tr>
+      <tr>
+        <th>状态</th>
+        <td>
+          {% if resident.status == "active" %}在住
+          {% elif resident.status == "moved_out" %}已迁出
+          {% elif resident.status == "arrears" %}欠费
+          {% else %}未知{% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th>标签</th>
+        <td>
+          {% for t in resident.tags.all %}
+            <span class="tag">{{ t.name }}</span>
+          {% empty %}
+            -
+          {% endfor %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h3>房屋信息</h3>
+  <table class="simple-table">
+    <tbody>
+      <tr><th>楼栋</th><td>{{ room.unit.building.name }}</td></tr>
+      <tr><th>单元</th><td>{{ room.unit.name }}</td></tr>
+      <tr><th>房号</th><td>{{ room.room_no }}</td></tr>
+      <tr><th>楼层</th><td>{{ room.floor_no|default:"-" }}</td></tr>
+      <tr><th>建筑面积</th><td>{% if room.area %}{{ room.area }} ㎡{% else %}-{% endif %}</td></tr>
+      <tr><th>房间状态</th><td>{{ room.get_status_display }}</td></tr>
+      <tr><th>产权人姓名</th><td>{{ room.owner_name|default:"-" }}</td></tr>
+      <tr><th>产权人电话</th><td>{{ room.owner_phone|default:"-" }}</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h3>同户家庭成员</h3>
+  <table class="simple-table">
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>联系电话</th>
+        <th>是否户主</th>
+        <th>与户主关系</th>
+        <th>状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in family_members %}
+      <tr>
+        <td>{{ m.name }}</td>
+        <td>{{ m.phone|default:"-" }}</td>
+        <td>{% if m.is_householder %}是{% else %}否{% endif %}</td>
+        <td>{{ m.relation_to_householder|default:"-" }}</td>
+        <td>
+          {% if m.status == "active" %}在住
+          {% elif m.status == "moved_out" %}已迁出
+          {% elif m.status == "arrears" %}欠费
+          {% else %}未知{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">暂无其他家庭成员。</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h3>产权变更记录（房间）</h3>
+  <table class="simple-table">
+    <thead>
+      <tr>
+        <th>变更时间</th>
+        <th>原产权人</th>
+        <th>新产权人</th>
+        <th>变更原因</th>
+        <th>操作人</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in ownership_changes %}
+      <tr>
+        <td>{{ c.changed_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ c.old_owner_name|default:"-" }}</td>
+        <td>{{ c.new_owner_name }}</td>
+        <td>{{ c.reason|default:"-" }}</td>
+        <td>{{ c.operator|default:"-" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">暂无产权变更记录。</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}
+

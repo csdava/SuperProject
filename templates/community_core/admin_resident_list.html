@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}住户列表 - 管理员{% endblock %}
+{% block content %}
+<h2>住户列表</h2>
+<p>用于管理员在 Web 工作台中查看、搜索和进入住户详情。</p>
+
+<form method="get" class="filter-form">
+  <p>
+    <label for="id_q">关键字</label>
+    <input type="text" id="id_q" name="q" value="{{ q }}" placeholder="姓名 / 电话 / 房号 / 楼栋">
+  </p>
+  <p>
+    <label for="id_status">状态</label>
+    <select id="id_status" name="status">
+      <option value="">全部</option>
+      <option value="active" {% if status == "active" %}selected{% endif %}>在住</option>
+      <option value="moved_out" {% if status == "moved_out" %}selected{% endif %}>已迁出</option>
+      <option value="arrears" {% if status == "arrears" %}selected{% endif %}>欠费</option>
+    </select>
+  </p>
+  <p>
+    <label for="id_building">楼栋</label>
+    <select id="id_building" name="building">
+      <option value="">全部</option>
+      {% for b in buildings %}
+      <option value="{{ b.id }}" {% if building_id|default:''|stringformat:"s" == b.id|stringformat:"s" %}selected{% endif %}>{{ b.name }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <button type="submit">搜索</button>
+    <a href="{% url 'community_core:admin_resident_list' %}">重置</a>
+  </p>
+</form>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>姓名</th>
+      <th>联系电话</th>
+      <th>房间</th>
+      <th>楼栋/单元</th>
+      <th>是否户主</th>
+      <th>状态</th>
+      <th>标签</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in residents %}
+    <tr>
+      <td>{{ r.name }}</td>
+      <td>{{ r.phone }}</td>
+      <td>{{ r.room.room_no }}</td>
+      <td>{{ r.room.unit.building.name }} / {{ r.room.unit.name }}</td>
+      <td>{% if r.is_householder %}是{% else %}否{% endif %}</td>
+      <td>
+        {% if r.status == "active" %}在住
+        {% elif r.status == "moved_out" %}已迁出
+        {% elif r.status == "arrears" %}欠费
+        {% else %}未知{% endif %}
+      </td>
+      <td>
+        {% for t in r.tags.all %}
+          <span class="tag">{{ t.name }}</span>
+        {% empty %}
+          -
+        {% endfor %}
+      </td>
+      <td>
+        <a href="{% url 'community_core:admin_resident_detail' r.id %}">详情</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="8">暂无住户数据。</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+

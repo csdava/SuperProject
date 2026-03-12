@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}户主工作台{% endblock %}
+{% block content %}
+<h2>户主工作台</h2>
+<p>欢迎，{{ user.username }}。您已以「户主」身份登录。</p>
+
+<div class="dashboard-layout">
+  <aside class="dashboard-menu">
+    <h3>功能菜单</h3>
+    <ul>
+      <li>
+        <strong>社区公告</strong>
+        <ul>
+          <li><a href="#">查看最新公告</a></li>
+          <li><a href="#">历史公告查询</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>费用中心</strong>
+        <ul>
+          <li><a href="#">我的账单（仅本人）</a></li>
+          <li><a href="#">缴费记录</a></li>
+          <li><a href="#">在线缴费</a></li>
+          <li><a href="#">欠费查询</a></li>
+          <li><a href="#">发票申请</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>报事报修</strong>
+        <ul>
+          <li><a href="#">我要报修</a></li>
+          <li><a href="#">报修进度查看</a></li>
+          <li><a href="#">历史工单</a></li>
+          <li><a href="#">服务评价</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>访客管理</strong>
+        <ul>
+          <li><a href="#">邀请访客</a></li>
+          <li><a href="#">访客记录</a></li>
+          <li><a href="#">取消邀请</a></li>
+          <li><a href="#">访客二维码分享</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>车辆管理</strong>
+        <ul>
+          <li><a href="#">我的车辆</a></li>
+          <li><a href="#">车位状态</a></li>
+          <li><a href="#">临停申请</a></li>
+          <li><a href="#">违规记录</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>社区服务</strong>
+        <ul>
+          <li><a href="#">家政预约</a></li>
+          <li><a href="#">快递代收</a></li>
+          <li><a href="#">物品报失</a></li>
+          <li><a href="#">投诉建议</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>邻里圈</strong>
+        <ul>
+          <li><a href="#">发布动态</a></li>
+          <li><a href="#">社区活动</a></li>
+          <li><a href="#">二手市场</a></li>
+          <li><a href="#">邻里互助</a></li>
+        </ul>
+      </li>
+      <li>
+        <strong>个人中心</strong>
+        <ul>
+          <li><a href="#">个人信息</a></li>
+          <li><a href="#">家庭成员</a></li>
+          <li><a href="#">房屋信息</a></li>
+          <li><a href="#">修改密码</a></li>
+          <li><a href="#">消息通知</a></li>
+          <li><a href="#">意见反馈</a></li>
+        </ul>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="dashboard-content">
+    <h3>快捷入口</h3>
+    <p>当前功能模块尚在逐步建设中，以上菜单为户主将来可用的业务功能结构。</p>
+    <ul>
+      <li>优先计划：费用中心、报事报修、访客管理、社区公告。</li>
+      <li>后续迭代：车辆管理、社区服务、邻里圈、个人中心细节功能。</li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
