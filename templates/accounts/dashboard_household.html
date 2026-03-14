@@ -11,18 +11,18 @@
       <li>
         <strong>社区公告</strong>
         <ul>
-          <li><a href="#">查看最新公告</a></li>
-          <li><a href="#">历史公告查询</a></li>
+          <li><a href="{% url 'community_core:household_announcement_list' %}">查看最新公告</a></li>
+          <li><a href="{% url 'community_core:household_announcement_list' %}">历史公告查询</a></li>
         </ul>
       </li>
       <li>
         <strong>费用中心</strong>
         <ul>
-          <li><a href="#">我的账单（仅本人）</a></li>
-          <li><a href="#">缴费记录</a></li>
-          <li><a href="#">在线缴费</a></li>
-          <li><a href="#">欠费查询</a></li>
-          <li><a href="#">发票申请</a></li>
+          <li><a href="{% url 'property_fees:household_bill_list' %}">我的账单（仅本人）</a></li>
+          <li><a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a></li>
+          <li><a href="{% url 'property_fees:household_bill_list' %}?status=pending">欠费查询</a></li>
+          <li><a href="{% url 'property_fees:household_bill_list' %}">在线缴费</a></li>
+          <li><a href="{% url 'property_fees:household_bill_list' %}">发票申请</a></li>
         </ul>
       </li>
       <li>
@@ -63,10 +63,12 @@
       <li>
         <strong>邻里圈</strong>
         <ul>
-          <li><a href="#">发布动态</a></li>
-          <li><a href="#">社区活动</a></li>
-          <li><a href="#">二手市场</a></li>
-          <li><a href="#">邻里互助</a></li>
+          <li><a href="{% url 'community_core:household_neighborhood_feed' %}">邻里圈动态</a></li>
+          <li><a href="{% url 'community_core:household_neighborhood_create' %}">发布动态</a></li>
+          <li><a href="{% url 'community_core:household_activity_list' %}">社区活动</a></li>
+          <li><a href="{% url 'community_core:household_neighborhood_feed' %}?type=second_hand">二手市场</a></li>
+          <li><a href="{% url 'community_core:household_neighborhood_feed' %}?type=help">邻里互助</a></li>
+          <li><a href="{% url 'community_core:household_neighborhood_my_posts' %}">我的发布</a></li>
         </ul>
       </li>
       <li>

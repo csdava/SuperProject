@@ -204,3 +204,161 @@ class UserFeedback(models.Model):
     def __str__(self) -> str:
         return f"{self.user.username} @ {self.created_at}"
 
+
+# ---------- 社区服务：公告、活动 ----------
+
+
+class Announcement(models.Model):
+    """社区公告（管理员发布）。"""
+
+    title = models.CharField("标题", max_length=200)
+    content = models.TextField("内容", blank=True)
+    is_pinned = models.BooleanField("是否置顶", default=False)
+    is_published = models.BooleanField("是否已发布", default=False)
+    published_at = models.DateTimeField("发布时间", null=True, blank=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_announcements",
+        verbose_name="发布人",
+    )
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "社区公告"
+        verbose_name_plural = "社区公告"
+        ordering = ("-is_pinned", "-published_at", "-created_at")
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class CommunityActivity(models.Model):
+    """社区活动（管理员发布）。"""
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "草稿"
+        PUBLISHED = "published", "已发布"
+        ENDED = "ended", "已结束"
+
+    title = models.CharField("活动标题", max_length=200)
+    description = models.TextField("活动说明", blank=True)
+    start_time = models.DateTimeField("开始时间")
+    end_time = models.DateTimeField("结束时间")
+    location = models.CharField("活动地点", max_length=200, blank=True)
+    max_participants = models.PositiveIntegerField("人数上限", null=True, blank=True, help_text="不填表示不限制")
+    status = models.CharField(
+        "状态",
+        max_length=20,
+        choices=Status.choices,
+        default=Status.DRAFT,
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_activities",
+        verbose_name="创建人",
+    )
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "社区活动"
+        verbose_name_plural = "社区活动"
+        ordering = ("-start_time",)
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class ActivityRegistration(models.Model):
+    """活动报名记录。"""
+
+    class RegStatus(models.TextChoices):
+        REGISTERED = "registered", "已报名"
+        CANCELLED = "cancelled", "已取消"
+
+    activity = models.ForeignKey(
+        CommunityActivity,
+        on_delete=models.CASCADE,
+        related_name="registrations",
+        verbose_name="活动",
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="activity_registrations",
+        verbose_name="报名用户",
+    )
+    status = models.CharField(
+        "状态",
+        max_length=20,
+        choices=RegStatus.choices,
+        default=RegStatus.REGISTERED,
+    )
+    registered_at = models.DateTimeField("报名时间", auto_now_add=True)
+    remark = models.CharField("备注", max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = "活动报名"
+        verbose_name_plural = "活动报名"
+        ordering = ("-registered_at",)
+        unique_together = ("activity", "user")
+
+    def __str__(self) -> str:
+        return f"{self.user.username} - {self.activity.title}"
+
+
+# ---------- 邻里圈：动态 / 二手市场 / 邻里互助 ----------
+
+
+class NeighborhoodPost(models.Model):
+    """邻里圈帖子（动态、二手市场、邻里互助）。"""
+
+    class PostType(models.TextChoices):
+        DYNAMIC = "dynamic", "动态"
+        SECOND_HAND = "second_hand", "二手市场"
+        HELP = "help", "邻里互助"
+
+    class PostStatus(models.TextChoices):
+        NORMAL = "normal", "正常"
+        HIDDEN = "hidden", "已隐藏"
+        VIOLATED = "violated", "违规下架"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="neighborhood_posts",
+        verbose_name="发布人",
+    )
+    post_type = models.CharField(
+        "类型",
+        max_length=20,
+        choices=PostType.choices,
+        default=PostType.DYNAMIC,
+    )
+    title = models.CharField("标题", max_length=200, blank=True, help_text="动态可留空，二手/互助建议填写")
+    content = models.TextField("内容")
+    contact_info = models.CharField("联系方式", max_length=100, blank=True, help_text="选填，二手/互助可留电话或房号")
+    status = models.CharField(
+        "状态",
+        max_length=20,
+        choices=PostStatus.choices,
+        default=PostStatus.NORMAL,
+    )
+    created_at = models.DateTimeField("发布时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "邻里圈帖子"
+        verbose_name_plural = "邻里圈帖子"
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return (self.title or self.content[:30]) + f" ({self.get_post_type_display()})"
+

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}活动详情 - {{ activity.title }}{% endblock %}
+{% block content %}
+<h2>活动详情：{{ activity.title }}</h2>
+<p>
+  <a href="{% url 'community_core:admin_activity_list' %}">返回活动列表</a>
+  |
+  <a href="{% url 'community_core:admin_activity_edit' activity.pk %}">编辑活动</a>
+</p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>状态</th><td>{{ activity.get_status_display }}</td></tr>
+    <tr><th>开始时间</th><td>{{ activity.start_time|date:"Y-m-d H:i" }}</td></tr>
+    <tr><th>结束时间</th><td>{{ activity.end_time|date:"Y-m-d H:i" }}</td></tr>
+    <tr><th>活动地点</th><td>{{ activity.location|default:"-" }}</td></tr>
+    <tr><th>人数上限</th><td>{% if activity.max_participants %}{{ activity.max_participants }} 人{% else %}不限制{% endif %}</td></tr>
+    <tr><th>活动说明</th><td>{{ activity.description|default:"-"|linebreaks }}</td></tr>
+  </tbody>
+</table>
+
+<h3>报名名单（活动总结）</h3>
+<table class="simple-table">
+  <thead>
+    <tr><th>报名用户</th><th>报名时间</th><th>备注</th></tr>
+  </thead>
+  <tbody>
+    {% for r in registrations %}
+    <tr>
+      <td>{{ r.user.username }}</td>
+      <td>{{ r.registered_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ r.remark|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">暂无报名记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p>共 {{ registrations|length }} 人报名。</p>
+{% endblock %}

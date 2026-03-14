@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}社区活动管理 - 管理员{% endblock %}
+{% block content %}
+<h2>社区活动管理</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+  |
+  <a href="{% url 'community_core:admin_activity_create' %}">发布活动</a>
+</p>
+
+<p>
+  筛选：
+  <a href="{% url 'community_core:admin_activity_list' %}">全部</a>
+  <a href="{% url 'community_core:admin_activity_list' %}?status=draft">草稿</a>
+  <a href="{% url 'community_core:admin_activity_list' %}?status=published">已发布</a>
+  <a href="{% url 'community_core:admin_activity_list' %}?status=ended">已结束</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>活动标题</th>
+      <th>开始时间</th>
+      <th>结束时间</th>
+      <th>地点</th>
+      <th>状态</th>
+      <th>报名数</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in activities %}
+    <tr>
+      <td>{{ a.title }}</td>
+      <td>{{ a.start_time|date:"Y-m-d H:i" }}</td>
+      <td>{{ a.end_time|date:"Y-m-d H:i" }}</td>
+      <td>{{ a.location|default:"-" }}</td>
+      <td>{{ a.get_status_display }}</td>
+      <td>{{ a.reg_count }}</td>
+      <td>
+        <a href="{% url 'community_core:admin_activity_detail' a.pk %}">详情/报名管理</a>
+        |
+        <a href="{% url 'community_core:admin_activity_edit' a.pk %}">编辑</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">暂无活动。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

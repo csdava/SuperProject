@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}账单详情 - {{ bill }}{% endblock %}
+{% block content %}
+<h2>账单详情</h2>
+<p>
+  <a href="{% url 'property_fees:household_bill_list' %}">返回账单列表</a>
+  |
+  <a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a>
+</p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>房间</th><td>{{ bill.room }}</td></tr>
+    <tr><th>费用类型</th><td>{{ bill.fee_type.name }}</td></tr>
+    <tr><th>账期</th><td>{{ bill.period }}</td></tr>
+    <tr><th>应收金额</th><td>{{ bill.amount }} 元</td></tr>
+    <tr><th>已缴金额</th><td>{{ bill.paid_amount }} 元</td></tr>
+    <tr><th>待缴</th><td>{{ remaining_due }} 元</td></tr>
+    <tr><th>状态</th><td>{{ bill.get_status_display }}</td></tr>
+    <tr><th>到期日</th><td>{{ bill.due_date|date:"Y-m-d"|default:"-" }}</td></tr>
+    {% if bill.paid_at %}<tr><th>缴清时间</th><td>{{ bill.paid_at|date:"Y-m-d H:i" }}</td></tr>{% endif %}
+    {% if bill.remark %}<tr><th>备注</th><td>{{ bill.remark }}</td></tr>{% endif %}
+  </tbody>
+</table>
+
+<h3>缴费记录</h3>
+{% if payments %}
+<table class="simple-table">
+  <thead>
+    <tr><th>缴费时间</th><th>金额</th><th>支付方式</th><th>操作人</th></tr>
+  </thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.paid_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ p.amount }} 元</td>
+      <td>{{ p.get_payment_method_display }}</td>
+      <td>{{ p.operator.username|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无缴费记录。线下缴费后由物业录入，您可在此查看。</p>
+{% endif %}
+<p class="text-muted" style="font-size:0.9em;">在线缴费、发票申请功能敬请期待。</p>
+{% endblock %}

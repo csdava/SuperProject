@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}邻里圈{% endblock %}
+{% block content %}
+<h2>邻里圈</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'community_core:household_neighborhood_create' %}">发布动态</a>
+  |
+  <a href="{% url 'community_core:household_neighborhood_my_posts' %}">我的发布</a>
+</p>
+
+<p>
+  筛选：
+  <a href="{% url 'community_core:household_neighborhood_feed' %}">全部</a>
+  <a href="{% url 'community_core:household_neighborhood_feed' %}?type=dynamic">动态</a>
+  <a href="{% url 'community_core:household_neighborhood_feed' %}?type=second_hand">二手市场</a>
+  <a href="{% url 'community_core:household_neighborhood_feed' %}?type=help">邻里互助</a>
+</p>
+
+<ul style="list-style:none; padding:0;">
+  {% for post in posts %}
+  <li style="border:1px solid #eee; padding:12px; margin-bottom:12px; border-radius:6px;">
+    <span style="color:#888;">[{{ post.get_post_type_display }}]</span>
+    {% if post.title %}<strong>{{ post.title }}</strong><br>{% endif %}
+    {{ post.content|linebreaks }}
+    {% if post.contact_info %}<p style="color:#666;">联系方式：{{ post.contact_info }}</p>{% endif %}
+    <p style="color:#999; font-size:0.9em;">
+      {{ post.user.username }} · {{ post.created_at|date:"Y-m-d H:i" }}
+      <a href="{% url 'community_core:household_neighborhood_detail' post.pk %}">查看</a>
+    </p>
+  </li>
+  {% empty %}
+  <li>暂无内容，快来<a href="{% url 'community_core:household_neighborhood_create' %}">发一条</a>吧。</li>
+  {% endfor %}
+</ul>
+{% endblock %}

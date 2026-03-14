@@ -9,6 +9,10 @@ from .models import (
     OwnershipChange,
     UserMessage,
     UserFeedback,
+    Announcement,
+    CommunityActivity,
+    ActivityRegistration,
+    NeighborhoodPost,
 )
 
 
@@ -95,3 +99,38 @@ class UserFeedbackAdmin(admin.ModelAdmin):
         return (obj.content[:40] + "…") if len(obj.content) > 40 else obj.content
 
     content_preview.short_description = "内容摘要"
+
+
+class ActivityRegistrationInline(admin.TabularInline):
+    model = ActivityRegistration
+    extra = 0
+    readonly_fields = ("registered_at",)
+
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ("title", "is_pinned", "is_published", "published_at", "created_by", "created_at")
+    list_filter = ("is_pinned", "is_published")
+    search_fields = ("title", "content")
+
+
+@admin.register(CommunityActivity)
+class CommunityActivityAdmin(admin.ModelAdmin):
+    list_display = ("title", "start_time", "end_time", "location", "status", "created_by", "created_at")
+    list_filter = ("status",)
+    search_fields = ("title", "description", "location")
+    inlines = [ActivityRegistrationInline]
+
+
+@admin.register(ActivityRegistration)
+class ActivityRegistrationAdmin(admin.ModelAdmin):
+    list_display = ("activity", "user", "status", "registered_at")
+    list_filter = ("status", "activity")
+    search_fields = ("user__username", "activity__title")
+
+
+@admin.register(NeighborhoodPost)
+class NeighborhoodPostAdmin(admin.ModelAdmin):
+    list_display = ("title", "post_type", "user", "status", "created_at")
+    list_filter = ("post_type", "status")
+    search_fields = ("title", "content", "user__username")

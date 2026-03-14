@@ -9,6 +9,9 @@ from .models import (
     Resident,
     ResidentTag,
     OwnershipChange,
+    Announcement,
+    CommunityActivity,
+    NeighborhoodPost,
 )
 
 User = get_user_model()
@@ -110,6 +113,63 @@ class OwnershipChangeForm(forms.ModelForm):
             "reason": "变更原因",
         }
         widgets = {"reason": forms.Textarea(attrs={"rows": 2})}
+
+
+# ---------- 管理员端：社区服务（公告、活动） ----------
+
+
+class AnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        fields = ("title", "content", "is_pinned", "is_published")
+        labels = {"title": "标题", "content": "内容", "is_pinned": "置顶", "is_published": "发布"}
+        widgets = {"content": forms.Textarea(attrs={"rows": 6})}
+
+
+class CommunityActivityForm(forms.ModelForm):
+    class Meta:
+        model = CommunityActivity
+        fields = (
+            "title",
+            "description",
+            "start_time",
+            "end_time",
+            "location",
+            "max_participants",
+            "status",
+        )
+        labels = {
+            "title": "活动标题",
+            "description": "活动说明",
+            "start_time": "开始时间",
+            "end_time": "结束时间",
+            "location": "活动地点",
+            "max_participants": "人数上限（不填不限制）",
+            "status": "状态",
+        }
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 4}),
+            "start_time": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "end_time": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+        }
+
+
+class NeighborhoodPostForm(forms.ModelForm):
+    """邻里圈发帖表单。"""
+
+    class Meta:
+        model = NeighborhoodPost
+        fields = ("post_type", "title", "content", "contact_info")
+        labels = {
+            "post_type": "类型",
+            "title": "标题（动态可留空）",
+            "content": "内容",
+            "contact_info": "联系方式（选填）",
+        }
+        widgets = {
+            "content": forms.Textarea(attrs={"rows": 4, "placeholder": "请填写正文…"}),
+            "contact_info": forms.TextInput(attrs={"placeholder": "电话或房号，选填"}),
+        }
 
 
 # ---------- 户主端 ----------

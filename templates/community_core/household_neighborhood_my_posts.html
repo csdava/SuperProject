@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}我的发布{% endblock %}
+{% block content %}
+<h2>我的发布</h2>
+<p>
+  <a href="{% url 'community_core:household_neighborhood_feed' %}">返回邻里圈</a>
+  |
+  <a href="{% url 'community_core:household_neighborhood_create' %}">发布动态</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>标题/摘要</th>
+      <th>状态</th>
+      <th>发布时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for post in posts %}
+    <tr>
+      <td>{{ post.get_post_type_display }}</td>
+      <td>{% if post.title %}{{ post.title }}{% else %}{{ post.content|truncatewords:15 }}{% endif %}</td>
+      <td>{{ post.get_status_display }}</td>
+      <td>{{ post.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        {% if post.status == "normal" %}
+        <a href="{% url 'community_core:household_neighborhood_detail' post.pk %}">查看</a>
+        {% endif %}
+        |
+        <a href="{% url 'community_core:household_neighborhood_delete' post.pk %}">删除</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">您还没有发布过内容。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

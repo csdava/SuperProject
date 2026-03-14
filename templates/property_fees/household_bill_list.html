@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}我的账单{% endblock %}
+{% block content %}
+<h2>我的账单</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a>
+</p>
+
+{% if total_due and total_due > 0 %}
+<p><strong>待缴总额：{{ total_due }} 元</strong> <a href="{% url 'property_fees:household_bill_list' %}?status=pending">查看待缴费</a></p>
+{% endif %}
+
+<p>
+  筛选：
+  <a href="{% url 'property_fees:household_bill_list' %}">全部</a>
+  <a href="{% url 'property_fees:household_bill_list' %}?status=pending">待缴费</a>
+  <a href="{% url 'property_fees:household_bill_list' %}?status=overdue">已逾期</a>
+  <a href="{% url 'property_fees:household_bill_list' %}?status=paid">已缴清</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>房间</th>
+      <th>费用类型</th>
+      <th>账期</th>
+      <th>应收</th>
+      <th>已缴</th>
+      <th>状态</th>
+      <th>到期日</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in bills %}
+    <tr>
+      <td>{{ b.room }}</td>
+      <td>{{ b.fee_type.name }}</td>
+      <td>{{ b.period }}</td>
+      <td>{{ b.amount }} 元</td>
+      <td>{{ b.paid_amount }} 元</td>
+      <td>{{ b.get_status_display }}</td>
+      <td>{{ b.due_date|date:"Y-m-d"|default:"-" }}</td>
+      <td><a href="{% url 'property_fees:household_bill_detail' b.pk %}">详情</a></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="8">暂无账单。若您已绑定房间，账单由物业在后台生成后在此显示。</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="text-muted" style="font-size:0.9em;">在线缴费、发票申请功能敬请期待；当前可在账单详情中查看缴费记录，线下缴费后由物业录入。</p>
+{% endblock %}

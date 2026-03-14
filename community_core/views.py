@@ -9,6 +9,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from accounts.models import UserProfile
+from django.utils import timezone
+
 from .models import (
     Resident,
     Room,
@@ -18,6 +20,10 @@ from .models import (
     OwnershipChange,
     UserMessage,
     UserFeedback,
+    Announcement,
+    CommunityActivity,
+    ActivityRegistration,
+    NeighborhoodPost,
 )
 from .forms import (
     HouseholdProfileForm,
@@ -28,6 +34,9 @@ from .forms import (
     ResidentForm,
     ResidentTagForm,
     OwnershipChangeForm,
+    AnnouncementForm,
+    CommunityActivityForm,
+    NeighborhoodPostForm,
 )
 
 User = get_user_model()
@@ -490,6 +499,183 @@ def admin_ownership_add(request):
     return render(request, "community_core/admin_ownership_form.html", {"form": form})
 
 
+# ---------- 管理员端：社区服务（公告、活动） ----------
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_announcement_list(request):
+    """公告列表（筛选：全部/已发布/草稿）。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    status_filter = request.GET.get("status", "").strip()
+    qs = Announcement.objects.all().order_by("-is_pinned", "-published_at", "-created_at")
+    if status_filter == "published":
+        qs = qs.filter(is_published=True)
+    elif status_filter == "draft":
+        qs = qs.filter(is_published=False)
+    return render(
+        request,
+        "community_core/admin_announcement_list.html",
+        {"announcements": qs, "status_filter": status_filter},
+    )
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_announcement_create(request):
+    """发布公告。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    if request.method == "POST":
+        form = AnnouncementForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.created_by = request.user
+            if obj.is_published:
+                obj.published_at = timezone.now()
+            obj.save()
+            messages.success(request, "公告已保存。")
+            return redirect("community_core:admin_announcement_list")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = AnnouncementForm()
+    return render(request, "community_core/admin_announcement_form.html", {"form": form, "is_edit": False})
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_announcement_edit(request, pk):
+    """编辑公告。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    announcement = get_object_or_404(Announcement, pk=pk)
+    if request.method == "POST":
+        form = AnnouncementForm(request.POST, instance=announcement)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            if obj.is_published and not announcement.published_at:
+                obj.published_at = timezone.now()
+            obj.save()
+            messages.success(request, "公告已更新。")
+            return redirect("community_core:admin_announcement_list")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = AnnouncementForm(instance=announcement)
+    return render(
+        request,
+        "community_core/admin_announcement_form.html",
+        {"form": form, "announcement": announcement, "is_edit": True},
+    )
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_announcement_delete(request, pk):
+    """删除公告。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    announcement = get_object_or_404(Announcement, pk=pk)
+    if request.method == "POST":
+        announcement.delete()
+        messages.success(request, "公告已删除。")
+        return redirect("community_core:admin_announcement_list")
+    return render(request, "community_core/admin_announcement_confirm_delete.html", {"announcement": announcement})
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_announcement_toggle_pin(request, pk):
+    """置顶/取消置顶。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    announcement = get_object_or_404(Announcement, pk=pk)
+    announcement.is_pinned = not announcement.is_pinned
+    announcement.save(update_fields=["is_pinned", "updated_at"])
+    messages.success(request, "已取消置顶。" if not announcement.is_pinned else "已置顶。")
+    return redirect("community_core:admin_announcement_list")
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_activity_list(request):
+    """社区活动列表（可按状态筛选）。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    status_filter = request.GET.get("status", "").strip()
+    qs = CommunityActivity.objects.all().order_by("-start_time")
+    if status_filter:
+        qs = qs.filter(status=status_filter)
+    from django.db.models import Count
+    qs = qs.annotate(reg_count=Count("registrations", filter=Q(registrations__status="registered")))
+    return render(
+        request,
+        "community_core/admin_activity_list.html",
+        {"activities": qs, "status_filter": status_filter},
+    )
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_activity_create(request):
+    """发布活动。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    if request.method == "POST":
+        form = CommunityActivityForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.created_by = request.user
+            obj.save()
+            messages.success(request, "活动已保存。")
+            return redirect("community_core:admin_activity_list")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = CommunityActivityForm()
+    return render(request, "community_core/admin_activity_form.html", {"form": form, "is_edit": False})
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_activity_edit(request, pk):
+    """编辑活动。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    activity = get_object_or_404(CommunityActivity, pk=pk)
+    if request.method == "POST":
+        form = CommunityActivityForm(request.POST, instance=activity)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "活动已更新。")
+            return redirect("community_core:admin_activity_detail", pk=pk)
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = CommunityActivityForm(instance=activity)
+    return render(
+        request,
+        "community_core/admin_activity_form.html",
+        {"form": form, "activity": activity, "is_edit": True},
+    )
+
+
+@login_required(login_url="accounts:login_select_role")
+def admin_activity_detail(request, pk):
+    """活动详情与报名管理（报名名单、活动总结）。"""
+    denied = _require_admin(request)
+    if denied:
+        return denied
+    activity = get_object_or_404(
+        CommunityActivity.objects.prefetch_related("registrations__user"),
+        pk=pk,
+    )
+    registrations = activity.registrations.filter(status=ActivityRegistration.RegStatus.REGISTERED).select_related("user")
+    return render(
+        request,
+        "community_core/admin_activity_detail.html",
+        {"activity": activity, "registrations": registrations},
+    )
+
+
 # ---------- 户主端个人中心 ----------
 
 
@@ -632,3 +818,149 @@ def household_feedback(request):
         "community_core/household_feedback.html",
         {"form": form, "feedback_list": feedback_list},
     )
+
+
+# ---------- 户主端：社区公告与活动 ----------
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_announcement_list(request):
+    """户主查看已发布公告列表。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    announcements = Announcement.objects.filter(is_published=True).order_by("-is_pinned", "-published_at", "-created_at")[:50]
+    return render(request, "community_core/household_announcement_list.html", {"announcements": announcements})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_announcement_detail(request, pk):
+    """户主查看公告详情。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    announcement = get_object_or_404(Announcement, pk=pk, is_published=True)
+    return render(request, "community_core/household_announcement_detail.html", {"announcement": announcement})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_activity_list(request):
+    """户主查看已发布/进行中的活动列表。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    now = timezone.now()
+    activities = (
+        CommunityActivity.objects.filter(status=CommunityActivity.Status.PUBLISHED)
+        .filter(end_time__gte=now)
+        .order_by("start_time")[:30]
+    )
+    return render(request, "community_core/household_activity_list.html", {"activities": activities})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_activity_detail(request, pk):
+    """户主查看活动详情，可报名/取消报名。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    activity = get_object_or_404(CommunityActivity, pk=pk, status=CommunityActivity.Status.PUBLISHED)
+    registration = activity.registrations.filter(user=request.user).first()
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "register" and not registration:
+            if activity.max_participants:
+                from django.db.models import Count
+                current = activity.registrations.filter(status=ActivityRegistration.RegStatus.REGISTERED).count()
+                if current >= activity.max_participants:
+                    messages.warning(request, "报名人数已满。")
+                    return redirect("community_core:household_activity_detail", pk=pk)
+            ActivityRegistration.objects.create(activity=activity, user=request.user)
+            messages.success(request, "报名成功。")
+            return redirect("community_core:household_activity_detail", pk=pk)
+        if action == "cancel" and registration and registration.status == ActivityRegistration.RegStatus.REGISTERED:
+            registration.status = ActivityRegistration.RegStatus.CANCELLED
+            registration.save(update_fields=["status"])
+            messages.success(request, "已取消报名。")
+            return redirect("community_core:household_activity_detail", pk=pk)
+    registration = activity.registrations.filter(user=request.user).first()
+    return render(
+        request,
+        "community_core/household_activity_detail.html",
+        {"activity": activity, "registration": registration},
+    )
+
+
+# ---------- 户主端：邻里圈 ----------
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_neighborhood_feed(request):
+    """邻里圈动态流：全部/动态/二手/互助，仅显示正常状态。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    post_type = request.GET.get("type", "").strip()
+    qs = NeighborhoodPost.objects.filter(status=NeighborhoodPost.PostStatus.NORMAL).select_related("user").order_by("-created_at")
+    if post_type and post_type in dict(NeighborhoodPost.PostType.choices):
+        qs = qs.filter(post_type=post_type)
+    qs = qs[:80]
+    return render(
+        request,
+        "community_core/household_neighborhood_feed.html",
+        {"posts": qs, "type_filter": post_type},
+    )
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_neighborhood_create(request):
+    """发布动态/二手/互助。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    if request.method == "POST":
+        form = NeighborhoodPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            messages.success(request, "发布成功。")
+            return redirect("community_core:household_neighborhood_feed")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = NeighborhoodPostForm()
+    return render(request, "community_core/household_neighborhood_form.html", {"form": form})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_neighborhood_detail(request, pk):
+    """帖子详情（仅正常状态可见）。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    post = get_object_or_404(NeighborhoodPost.objects.select_related("user"), pk=pk, status=NeighborhoodPost.PostStatus.NORMAL)
+    return render(request, "community_core/household_neighborhood_detail.html", {"post": post})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_neighborhood_my_posts(request):
+    """我的发布：本人所有帖子，可删除。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    posts = NeighborhoodPost.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "community_core/household_neighborhood_my_posts.html", {"posts": posts})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_neighborhood_delete(request, pk):
+    """删除本人发布的帖子。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    post = get_object_or_404(NeighborhoodPost, pk=pk, user=request.user)
+    if request.method == "POST":
+        post.delete()
+        messages.success(request, "已删除。")
+        return redirect("community_core:household_neighborhood_my_posts")
+    return render(request, "community_core/household_neighborhood_confirm_delete.html", {"post": post})

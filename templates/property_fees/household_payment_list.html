@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}缴费记录{% endblock %}
+{% block content %}
+<h2>缴费记录</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'property_fees:household_bill_list' %}">我的账单</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>缴费时间</th>
+      <th>房间</th>
+      <th>费用类型</th>
+      <th>账期</th>
+      <th>金额</th>
+      <th>支付方式</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.paid_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ p.bill.room }}</td>
+      <td>{{ p.bill.fee_type.name }}</td>
+      <td>{{ p.bill.period }}</td>
+      <td>{{ p.amount }} 元</td>
+      <td>{{ p.get_payment_method_display }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">暂无缴费记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
