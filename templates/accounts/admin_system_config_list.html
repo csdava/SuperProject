@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}基础参数配置 - 系统管理{% endblock %}
+{% block content %}
+<h2>基础参数配置</h2>
+<p><a href="{% url 'accounts:dashboard_admin' %}">返回管理后台</a> | <a href="{% url 'accounts:admin_system_config_create' %}">新增参数</a></p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>参数键</th>
+      <th>参数值（预览）</th>
+      <th>说明</th>
+      <th>更新时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in config_list %}
+    <tr>
+      <td>{{ item.key }}</td>
+      <td>{{ item.value|default:"-"|truncatechars:50 }}</td>
+      <td>{{ item.description|default:"-" }}</td>
+      <td>{{ item.updated_at|date:"Y-m-d H:i" }}</td>
+      <td><a href="{% url 'accounts:admin_system_config_edit' item.pk %}">编辑</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无参数，请点击「新增参数」添加。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

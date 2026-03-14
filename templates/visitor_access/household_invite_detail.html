@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}邀请详情 - {{ invite.visitor_name }}{% endblock %}
+{% block content %}
+<h2>访客邀请详情</h2>
+<p>
+  <a href="{% url 'visitor_access:household_invite_list' %}">返回访客记录</a>
+</p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>访客姓名</th><td>{{ invite.visitor_name }}</td></tr>
+    <tr><th>访客电话</th><td>{{ invite.visitor_phone|default:"-" }}</td></tr>
+    <tr><th>证件号</th><td>{{ invite.id_number|default:"-" }}</td></tr>
+    <tr><th>来访事由</th><td>{{ invite.purpose|default:"-" }}</td></tr>
+    <tr><th>到访房间</th><td>{{ invite.room }}</td></tr>
+    <tr><th>有效期</th><td>{{ invite.valid_from|date:"Y-m-d H:i" }} 至 {{ invite.valid_until|date:"Y-m-d H:i" }}</td></tr>
+    <tr><th>状态</th><td>{{ invite.get_status_display }}</td></tr>
+    <tr><th>邀请码</th><td><code>{{ invite.token }}</code></td></tr>
+  </tbody>
+</table>
+
+{% if invite.status == "active" %}
+<h3>访客二维码 / 分享链接</h3>
+<p>请将以下链接或邀请码发给访客，访客在有效期内出示给门岗核验后通行。</p>
+<p><strong>邀请链接：</strong><br><a href="{{ invite_url }}" target="_blank">{{ invite_url }}</a></p>
+<p>邀请码：<code>{{ invite.token }}</code></p>
+<p><a href="{% url 'visitor_access:household_invite_cancel' invite.pk %}">取消该邀请</a></p>
+{% endif %}
+{% endblock %}

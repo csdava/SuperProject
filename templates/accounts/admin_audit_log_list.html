@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}操作日志 - 系统管理{% endblock %}
+{% block content %}
+<h2>操作日志</h2>
+<p><a href="{% url 'accounts:dashboard_admin' %}">返回管理后台</a></p>
+
+<form method="get" style="margin:1em 0;">
+  <select name="action">
+    <option value="">全部操作类型</option>
+    {% for a in actions %}
+    <option value="{{ a }}" {% if action_filter == a %}selected{% endif %}>{{ a }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">查询</button>
+</form>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>操作人</th>
+      <th>操作类型</th>
+      <th>说明</th>
+      <th>时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in page_obj %}
+    <tr>
+      <td>{% if log.user %}{{ log.user.username }}{% else %}-{% endif %}</td>
+      <td>{{ log.action }}</td>
+      <td>{{ log.message }}</td>
+      <td>{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">暂无记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page_obj.has_other_pages %}
+<p>
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if action_filter %}&action={{ action_filter }}{% endif %}">上一页</a>{% endif %}
+  第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if action_filter %}&action={{ action_filter }}{% endif %}">下一页</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}费用标准设置 - 管理员{% endblock %}
+{% block content %}
+<h2>费用标准设置</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+  |
+  <a href="{% url 'property_fees:admin_fee_type_create' %}">新增费用类型</a>
+</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>费用名称</th><th>编号</th><th>单位</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for t in fee_types %}
+    <tr>
+      <td>{{ t.name }}</td>
+      <td>{{ t.code|default:"-" }}</td>
+      <td>{{ t.unit }}</td>
+      <td><a href="{% url 'property_fees:admin_fee_type_edit' t.pk %}">编辑</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">暂无费用类型。<a href="{% url 'property_fees:admin_fee_type_create' %}">新增</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

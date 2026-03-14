@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}录入缴费 - 管理员{% endblock %}
+{% block content %}
+<h2>录入缴费</h2>
+<p><a href="{% url 'property_fees:admin_payment_list' %}">返回缴费记录</a></p>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">保存</button>
+</form>
+<p class="text-muted" style="font-size:0.9em;">选择账单后填写缴费金额与支付方式，保存后将自动更新该账单的已缴金额与状态。</p>
+{% endblock %}

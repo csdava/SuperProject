@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}登记快递{% endblock %}
+{% block content %}
+<h2>登记快递代收</h2>
+<p><a href="{% url 'community_core:household_parcel_list' %}">返回快递列表</a></p>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">登记</button>
+</form>
+<p class="text-muted" style="font-size:0.9em;">收到取件通知后在此登记，取件后可在列表中标记已取。</p>
+{% endblock %}

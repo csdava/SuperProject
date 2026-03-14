@@ -30,16 +30,17 @@
       <li>
         <strong>财务管理</strong>
         <ul>
-          <li><a href="#">费用标准设置</a></li>
+          <li><a href="{% url 'property_fees:admin_fee_type_list' %}">费用标准设置</a></li>
+          <li><a href="{% url 'property_fees:admin_bill_list' %}">账单管理</a></li>
+          <li><a href="{% url 'property_fees:admin_bill_create' %}">账单生成</a></li>
+          <li><a href="{% url 'property_fees:admin_bill_bulk' %}">批量生成账单</a></li>
+          <li><a href="{% url 'property_fees:admin_payment_list' %}">缴费记录查询</a></li>
+          <li><a href="{% url 'property_fees:admin_payment_add' %}">录入缴费</a></li>
+          <li><a href="{% url 'property_fees:admin_fee_stats' %}">收费率统计</a></li>
           <li><a href="#">费用周期设置</a></li>
           <li><a href="#">优惠减免审批</a></li>
-          <li><a href="#">账单生成</a></li>
-          <li><a href="#">账单修改</a></li>
-          <li><a href="#">账单批量导出</a></li>
-          <li><a href="#">缴费记录查询</a></li>
           <li><a href="#">欠费催缴</a></li>
           <li><a href="#">发票管理</a></li>
-          <li><a href="#">收费率统计</a></li>
           <li><a href="#">费用趋势分析</a></li>
           <li><a href="#">财务报表</a></li>
         </ul>
@@ -110,15 +111,15 @@
         <ul>
           <li><a href="#">部门管理</a></li>
           <li><a href="#">岗位设置</a></li>
-          <li><a href="#">用户账号管理</a></li>
+          <li><a href="{% url 'accounts:admin_user_list' %}">用户账号管理</a></li>
           <li><a href="#">角色权限配置</a></li>
           <li><a href="#">权限分配</a></li>
-          <li><a href="#">基础参数配置</a></li>
+          <li><a href="{% url 'accounts:admin_system_config_list' %}">基础参数配置</a></li>
           <li><a href="#">工作流设置</a></li>
           <li><a href="#">短信模板</a></li>
           <li><a href="#">支付配置</a></li>
-          <li><a href="#">操作日志</a></li>
-          <li><a href="#">登录日志</a></li>
+          <li><a href="{% url 'accounts:admin_audit_log_list' %}">操作日志</a></li>
+          <li><a href="{% url 'accounts:admin_login_log_list' %}">登录日志</a></li>
           <li><a href="#">系统日志</a></li>
           <li><a href="#">数据备份</a></li>
           <li><a href="#">数据恢复</a></li>
@@ -135,7 +136,7 @@
         <h4>待审批用户</h4>
         <p class="card-number">{{ pending_approvals }}</p>
         <p class="card-desc">注册后尚未通过审批的户主/维修人员数量。</p>
-        <p><a href="/admin/accounts/userprofile/">前往审批</a></p>
+        <p><a href="{% url 'accounts:admin_user_list' %}?is_approved=0">前往审批</a></p>
       </div>
       <div class="card">
         <h4>系统用户总数</h4>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}物品报失{% endblock %}
+{% block content %}
+<h2>物品报失</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'community_core:household_lost_report_create' %}">提交报失</a>
+</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>物品描述</th><th>丢失地点</th><th>状态</th><th>提交时间</th></tr>
+  </thead>
+  <tbody>
+    {% for r in reports %}
+    <tr>
+      <td>{{ r.item_desc }}</td>
+      <td>{{ r.lost_place|default:"-" }}</td>
+      <td>{{ r.get_status_display }}</td>
+      <td>{{ r.created_at|date:"Y-m-d H:i" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">暂无报失记录。<a href="{% url 'community_core:household_lost_report_create' %}">提交报失</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

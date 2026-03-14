@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}快递代收{% endblock %}
+{% block content %}
+<h2>快递代收</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'community_core:household_parcel_create' %}">登记快递</a>
+</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>快递公司</th><th>取件码</th><th>备注</th><th>状态</th><th>登记时间</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for p in parcels %}
+    <tr>
+      <td>{{ p.carrier|default:"-" }}</td>
+      <td>{{ p.pickup_code|default:"-" }}</td>
+      <td>{{ p.remark|default:"-" }}</td>
+      <td>{{ p.get_status_display }}</td>
+      <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        {% if p.status == "pending" %}
+        <form method="post" action="{% url 'community_core:household_parcel_mark_taken' p.pk %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit">标记已取</button>
+        </form>
+        {% else %}
+        {{ p.taken_at|date:"Y-m-d H:i" }} 已取
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">暂无快递记录。<a href="{% url 'community_core:household_parcel_create' %}">登记快递</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

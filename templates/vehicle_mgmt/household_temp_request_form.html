@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}临停申请{% endblock %}
+{% block content %}
+<h2>临停申请</h2>
+<p><a href="{% url 'vehicle_mgmt:household_temp_request_list' %}">返回申请列表</a></p>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">提交申请</button>
+</form>
+<p class="text-muted" style="font-size:0.9em;">提交后物业将审批，通过后可按规定时段临时停车。</p>
+{% endblock %}

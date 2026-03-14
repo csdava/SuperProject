@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}收费率统计 - 管理员{% endblock %}
+{% block content %}
+<h2>收费率统计</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+  |
+  <a href="{% url 'property_fees:admin_bill_list' %}">账单管理</a>
+  |
+  <a href="{% url 'property_fees:admin_payment_list' %}">缴费记录</a>
+</p>
+<div class="cards-row" style="display:flex; flex-wrap:wrap; gap:1rem;">
+  <div class="card" style="min-width:180px;">
+    <h4>应收总额</h4>
+    <p class="card-number">{{ total_amount }} 元</p>
+  </div>
+  <div class="card" style="min-width:180px;">
+    <h4>实收总额</h4>
+    <p class="card-number">{{ total_paid }} 元</p>
+  </div>
+  <div class="card" style="min-width:180px;">
+    <h4>待收总额</h4>
+    <p class="card-number">{{ total_due }} 元</p>
+  </div>
+  <div class="card" style="min-width:180px;">
+    <h4>账单笔数</h4>
+    <p class="card-number">{{ bill_count }}</p>
+  </div>
+  <div class="card" style="min-width:180px;">
+    <h4>已缴清笔数</h4>
+    <p class="card-number">{{ paid_count }}</p>
+  </div>
+  <div class="card" style="min-width:180px;">
+    <h4>已逾期笔数</h4>
+    <p class="card-number">{{ overdue_count }}</p>
+  </div>
+  <div class="card" style="min-width:180px;">
+    <h4>缴费记录条数</h4>
+    <p class="card-number">{{ payment_count }}</p>
+  </div>
+</div>
+{% if bill_count > 0 %}
+<p>收费率（已缴清/总笔数）：{{ paid_count }} / {{ bill_count }} = {% widthratio paid_count bill_count 100 %}%</p>
+{% endif %}
+{% endblock %}

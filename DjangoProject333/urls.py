@@ -12,10 +12,10 @@ urlpatterns = [
     path("", include("community_core.urls")),
     path("repair/", include("repair.urls")),
     path("fees/", include("property_fees.urls")),
-    # path("visitor/", include("visitor_access.urls")),
+    path("visitor/", include("visitor_access.urls")),
     # path("security/", include("security.urls")),
     # path("services/", include("life_services.urls")),
-    # path("vehicle/", include("vehicle_mgmt.urls")),
+    path("vehicle/", include("vehicle_mgmt.urls")),
     # path("facility/", include("facility_mgmt.urls")),
 ]
 

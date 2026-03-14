@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}编辑用户 - 用户账号管理{% endblock %}
+{% block content %}
+<h2>编辑用户：{{ edit_user.username }}</h2>
+<p><a href="{% url 'accounts:admin_user_list' %}">返回用户列表</a></p>
+
+<form method="post">
+  {% csrf_token %}
+  <p>
+    <label for="id_role">身份</label>
+    {{ form.role }}
+  </p>
+  <p>
+    <label>{{ form.is_approved }} 已审批（通过后可登录）</label>
+  </p>
+  <button type="submit">保存</button>
+</form>
+{% endblock %}

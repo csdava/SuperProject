@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}邀请访客{% endblock %}
+{% block content %}
+<h2>邀请访客</h2>
+<p><a href="{% url 'visitor_access:household_invite_list' %}">返回访客记录</a></p>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">创建邀请</button>
+</form>
+<p class="text-muted" style="font-size:0.9em;">创建后可将邀请链接或邀请码发给访客，访客在有效期内凭链接/码到门岗核验通行。</p>
+{% endblock %}

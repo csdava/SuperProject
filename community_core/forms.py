@@ -12,6 +12,9 @@ from .models import (
     Announcement,
     CommunityActivity,
     NeighborhoodPost,
+    ServiceBooking,
+    ParcelRecord,
+    LostItemReport,
 )
 
 User = get_user_model()
@@ -170,6 +173,49 @@ class NeighborhoodPostForm(forms.ModelForm):
             "content": forms.Textarea(attrs={"rows": 4, "placeholder": "请填写正文…"}),
             "contact_info": forms.TextInput(attrs={"placeholder": "电话或房号，选填"}),
         }
+
+
+# ---------- 户主端社区服务：家政预约、快递代收、物品报失 ----------
+
+
+class ServiceBookingForm(forms.ModelForm):
+    class Meta:
+        model = ServiceBooking
+        fields = ("service_type", "preferred_date", "preferred_time", "contact_phone", "address_remark", "remark")
+        labels = {
+            "service_type": "服务类型",
+            "preferred_date": "期望日期",
+            "preferred_time": "期望时段",
+            "contact_phone": "联系电话",
+            "address_remark": "地址备注",
+            "remark": "备注说明",
+        }
+        widgets = {
+            "preferred_date": forms.DateInput(attrs={"type": "date"}),
+            "remark": forms.Textarea(attrs={"rows": 3}),
+        }
+
+
+class ParcelRecordForm(forms.ModelForm):
+    class Meta:
+        model = ParcelRecord
+        fields = ("carrier", "pickup_code", "remark")
+        labels = {"carrier": "快递公司", "pickup_code": "取件码", "remark": "备注"}
+        widgets = {"carrier": forms.TextInput(attrs={"placeholder": "如：顺丰、菜鸟"})}
+
+
+class LostItemReportForm(forms.ModelForm):
+    class Meta:
+        model = LostItemReport
+        fields = ("item_desc", "lost_place", "lost_time", "contact_phone", "remark")
+        labels = {
+            "item_desc": "物品描述",
+            "lost_place": "丢失地点",
+            "lost_time": "丢失时间说明",
+            "contact_phone": "联系电话",
+            "remark": "补充说明",
+        }
+        widgets = {"remark": forms.Textarea(attrs={"rows": 3})}
 
 
 # ---------- 户主端 ----------

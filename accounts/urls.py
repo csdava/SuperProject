@@ -10,4 +10,12 @@ urlpatterns = [
     path("dashboard/household/", views.dashboard_household, name="dashboard_household"),
     path("dashboard/maintenance/", views.dashboard_maintenance, name="dashboard_maintenance"),
     path("dashboard/admin/", views.dashboard_admin, name="dashboard_admin"),
+    # 系统管理（仅管理员）
+    path("admin/users/", views.admin_user_list, name="admin_user_list"),
+    path("admin/users/<int:user_id>/edit/", views.admin_user_edit, name="admin_user_edit"),
+    path("admin/login-log/", views.admin_login_log_list, name="admin_login_log_list"),
+    path("admin/audit-log/", views.admin_audit_log_list, name="admin_audit_log_list"),
+    path("admin/system-config/", views.admin_system_config_list, name="admin_system_config_list"),
+    path("admin/system-config/add/", views.admin_system_config_create, name="admin_system_config_create"),
+    path("admin/system-config/<int:pk>/edit/", views.admin_system_config_edit, name="admin_system_config_edit"),
 ]

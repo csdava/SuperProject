@@ -53,4 +53,12 @@ urlpatterns = [
     path("household/neighborhood/my/", views.household_neighborhood_my_posts, name="household_neighborhood_my_posts"),
     path("household/neighborhood/<int:pk>/", views.household_neighborhood_detail, name="household_neighborhood_detail"),
     path("household/neighborhood/<int:pk>/delete/", views.household_neighborhood_delete, name="household_neighborhood_delete"),
+    # 户主端 - 社区服务（家政、快递、报失）
+    path("household/services/bookings/", views.household_service_booking_list, name="household_service_booking_list"),
+    path("household/services/bookings/create/", views.household_service_booking_create, name="household_service_booking_create"),
+    path("household/services/parcels/", views.household_parcel_list, name="household_parcel_list"),
+    path("household/services/parcels/create/", views.household_parcel_create, name="household_parcel_create"),
+    path("household/services/parcels/<int:pk>/taken/", views.household_parcel_mark_taken, name="household_parcel_mark_taken"),
+    path("household/services/lost/", views.household_lost_report_list, name="household_lost_report_list"),
+    path("household/services/lost/create/", views.household_lost_report_create, name="household_lost_report_create"),
 ]

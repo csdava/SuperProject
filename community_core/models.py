@@ -362,3 +362,116 @@ class NeighborhoodPost(models.Model):
     def __str__(self) -> str:
         return (self.title or self.content[:30]) + f" ({self.get_post_type_display()})"
 
+
+# ---------- 户主端社区服务：家政预约、快递代收、物品报失 ----------
+
+
+class ServiceBooking(models.Model):
+    """家政预约（户主提交）。"""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "待处理"
+        CONFIRMED = "confirmed", "已接单"
+        COMPLETED = "completed", "已完成"
+        CANCELLED = "cancelled", "已取消"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="service_bookings",
+        verbose_name="预约人",
+    )
+    service_type = models.CharField("服务类型", max_length=50, help_text="如：保洁、维修、搬家")
+    preferred_date = models.DateField("期望日期", null=True, blank=True)
+    preferred_time = models.CharField("期望时段", max_length=100, blank=True, help_text="如：上午、下午")
+    contact_phone = models.CharField("联系电话", max_length=30, blank=True)
+    address_remark = models.CharField("地址备注", max_length=200, blank=True, help_text="楼栋房号等")
+    remark = models.TextField("备注说明", blank=True)
+    status = models.CharField(
+        "状态",
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    created_at = models.DateTimeField("提交时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "家政预约"
+        verbose_name_plural = "家政预约"
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.service_type} - {self.user.username} ({self.get_status_display()})"
+
+
+class ParcelRecord(models.Model):
+    """快递代收登记（户主登记待取快递）。"""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "待取"
+        TAKEN = "taken", "已取"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="parcel_records",
+        verbose_name="登记人",
+    )
+    carrier = models.CharField("快递公司", max_length=50, blank=True)
+    pickup_code = models.CharField("取件码", max_length=50, blank=True)
+    remark = models.CharField("备注", max_length=200, blank=True)
+    status = models.CharField(
+        "状态",
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    created_at = models.DateTimeField("登记时间", auto_now_add=True)
+    taken_at = models.DateTimeField("取件时间", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "快递代收"
+        verbose_name_plural = "快递代收"
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.carrier or '快递'} - {self.user.username} ({self.get_status_display()})"
+
+
+class LostItemReport(models.Model):
+    """物品报失（户主提交）。"""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "待处理"
+        FOUND = "found", "已找到"
+        CLOSED = "closed", "已关闭"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="lost_item_reports",
+        verbose_name="报失人",
+    )
+    item_desc = models.CharField("物品描述", max_length=200)
+    lost_place = models.CharField("丢失地点", max_length=200, blank=True)
+    lost_time = models.CharField("丢失时间说明", max_length=200, blank=True)
+    contact_phone = models.CharField("联系电话", max_length=30, blank=True)
+    remark = models.TextField("补充说明", blank=True)
+    status = models.CharField(
+        "状态",
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    created_at = models.DateTimeField("提交时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        verbose_name = "物品报失"
+        verbose_name_plural = "物品报失"
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.item_desc[:30]} - {self.user.username}"
+

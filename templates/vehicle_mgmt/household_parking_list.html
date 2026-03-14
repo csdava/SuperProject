@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}车位状态{% endblock %}
+{% block content %}
+<h2>车位状态</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+</p>
+<p>
+  筛选：
+  <a href="{% url 'vehicle_mgmt:household_parking_list' %}">全部</a>
+  <a href="{% url 'vehicle_mgmt:household_parking_list' %}?type=fixed">固定车位</a>
+  <a href="{% url 'vehicle_mgmt:household_parking_list' %}?type=temp">临停车位</a>
+</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>车位编号</th><th>区域</th><th>类型</th><th>状态</th><th>备注</th></tr>
+  </thead>
+  <tbody>
+    {% for s in spaces %}
+    <tr>
+      <td>{{ s.code }}</td>
+      <td>{{ s.zone|default:"-" }}</td>
+      <td>{{ s.get_space_type_display }}</td>
+      <td>{{ s.get_status_display }}</td>
+      <td>{{ s.remark|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无车位信息。车位由物业在后台维护。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

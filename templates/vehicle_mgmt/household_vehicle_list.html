@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}我的车辆{% endblock %}
+{% block content %}
+<h2>我的车辆</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'vehicle_mgmt:household_vehicle_create' %}">登记车辆</a>
+</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>车牌号</th><th>品牌型号</th><th>颜色</th><th>登记时间</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for v in vehicles %}
+    <tr>
+      <td>{{ v.plate_number }}</td>
+      <td>{{ v.brand_model|default:"-" }}</td>
+      <td>{{ v.color|default:"-" }}</td>
+      <td>{{ v.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        <a href="{% url 'vehicle_mgmt:household_vehicle_edit' v.pk %}">编辑</a>
+        |
+        <a href="{% url 'vehicle_mgmt:household_vehicle_delete' v.pk %}">删除</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无登记车辆。<a href="{% url 'vehicle_mgmt:household_vehicle_create' %}">登记车辆</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

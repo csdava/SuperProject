@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}缴费记录查询 - 管理员{% endblock %}
+{% block content %}
+<h2>缴费记录查询</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+  |
+  <a href="{% url 'property_fees:admin_payment_add' %}">录入缴费</a>
+</p>
+<form method="get">
+  <p><label>账期</label><input type="text" name="period" value="{{ period_filter }}" placeholder="如 2024-01"> <button type="submit">筛选</button></p>
+</form>
+<table class="simple-table">
+  <thead>
+    <tr><th>缴费时间</th><th>房间</th><th>费用类型</th><th>账期</th><th>金额</th><th>支付方式</th><th>操作人</th></tr>
+  </thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.paid_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ p.bill.room }}</td>
+      <td>{{ p.bill.fee_type.name }}</td>
+      <td>{{ p.bill.period }}</td>
+      <td>{{ p.amount }} 元</td>
+      <td>{{ p.get_payment_method_display }}</td>
+      <td>{{ p.operator.username|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">暂无缴费记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

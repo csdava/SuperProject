@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}用户账号管理 - 系统管理{% endblock %}
+{% block content %}
+<h2>用户账号管理</h2>
+<p><a href="{% url 'accounts:dashboard_admin' %}">返回管理后台</a></p>
+
+<form method="get" class="filter-form" style="margin:1em 0;">
+  <label>身份</label>
+  <select name="role">
+    <option value="">全部</option>
+    {% for value, label in role_choices %}
+    <option value="{{ value }}" {% if role_filter == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <label>审批状态</label>
+  <select name="is_approved">
+    <option value="">全部</option>
+    <option value="0" {% if is_approved_filter == '0' %}selected{% endif %}>未审批</option>
+    <option value="1" {% if is_approved_filter == '1' %}selected{% endif %}>已审批</option>
+  </select>
+  <label>用户名</label>
+  <input type="text" name="q" value="{{ q }}" placeholder="搜索">
+  <button type="submit">查询</button>
+</form>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>用户名</th>
+      <th>身份</th>
+      <th>已审批</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in page_obj %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.profile.get_role_display }}</td>
+      <td>{% if u.profile.is_approved %}是{% else %}否{% endif %}</td>
+      <td><a href="{% url 'accounts:admin_user_edit' u.id %}">编辑</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">暂无用户。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page_obj.has_other_pages %}
+<p>
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if is_approved_filter %}&is_approved={{ is_approved_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}">上一页</a>{% endif %}
+  第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if is_approved_filter %}&is_approved={{ is_approved_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}">下一页</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

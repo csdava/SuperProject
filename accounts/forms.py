@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
-from .models import UserProfile
+from .models import UserProfile, SystemConfig
 
 
 class RegisterForm(UserCreationForm):
@@ -38,3 +38,25 @@ class LoginForm(AuthenticationForm):
 
     username = forms.CharField(label="用户名", max_length=150)
     password = forms.CharField(label="密码", widget=forms.PasswordInput)
+
+
+class AdminUserProfileForm(forms.Form):
+    """管理员端：修改用户身份与审批状态。"""
+
+    role = forms.ChoiceField(label="身份", choices=UserProfile.Role.choices)
+    is_approved = forms.BooleanField(label="已审批", required=False)
+
+
+class SystemConfigForm(forms.ModelForm):
+    """基础参数配置编辑。"""
+
+    class Meta:
+        model = SystemConfig
+        fields = ("key", "value", "description")
+        widgets = {"value": forms.Textarea(attrs={"rows": 3})}
+
+    def __init__(self, *args, **kwargs):
+        self.edit_key = kwargs.pop("edit_key", None)  # 编辑时传入，key 只读
+        super().__init__(*args, **kwargs)
+        if self.edit_key is not None:
+            self.fields["key"].disabled = True

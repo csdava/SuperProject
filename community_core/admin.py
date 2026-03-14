@@ -13,6 +13,9 @@ from .models import (
     CommunityActivity,
     ActivityRegistration,
     NeighborhoodPost,
+    ServiceBooking,
+    ParcelRecord,
+    LostItemReport,
 )
 
 
@@ -134,3 +137,24 @@ class NeighborhoodPostAdmin(admin.ModelAdmin):
     list_display = ("title", "post_type", "user", "status", "created_at")
     list_filter = ("post_type", "status")
     search_fields = ("title", "content", "user__username")
+
+
+@admin.register(ServiceBooking)
+class ServiceBookingAdmin(admin.ModelAdmin):
+    list_display = ("service_type", "user", "preferred_date", "status", "created_at")
+    list_filter = ("status",)
+    search_fields = ("service_type", "user__username", "remark")
+
+
+@admin.register(ParcelRecord)
+class ParcelRecordAdmin(admin.ModelAdmin):
+    list_display = ("carrier", "user", "pickup_code", "status", "created_at")
+    list_filter = ("status",)
+    search_fields = ("carrier", "user__username", "pickup_code")
+
+
+@admin.register(LostItemReport)
+class LostItemReportAdmin(admin.ModelAdmin):
+    list_display = ("item_desc", "user", "status", "created_at")
+    list_filter = ("status",)
+    search_fields = ("item_desc", "lost_place", "user__username")

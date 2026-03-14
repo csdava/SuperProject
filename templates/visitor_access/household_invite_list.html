@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}访客邀请 / 访客记录{% endblock %}
+{% block content %}
+<h2>访客管理</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'visitor_access:household_invite_create' %}">邀请访客</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>访客姓名</th>
+      <th>访客电话</th>
+      <th>到访房间</th>
+      <th>有效期</th>
+      <th>状态</th>
+      <th>创建时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for inv in invites %}
+    <tr>
+      <td>{{ inv.visitor_name }}</td>
+      <td>{{ inv.visitor_phone|default:"-" }}</td>
+      <td>{{ inv.room }}</td>
+      <td>{{ inv.valid_from|date:"m-d H:i" }} 至 {{ inv.valid_until|date:"m-d H:i" }}</td>
+      <td>{{ inv.get_status_display }}</td>
+      <td>{{ inv.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        <a href="{% url 'visitor_access:household_invite_detail' inv.pk %}">详情/分享</a>
+        {% if inv.status == "active" %}
+        | <a href="{% url 'visitor_access:household_invite_cancel' inv.pk %}">取消邀请</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">暂无访客邀请。<a href="{% url 'visitor_access:household_invite_create' %}">邀请访客</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

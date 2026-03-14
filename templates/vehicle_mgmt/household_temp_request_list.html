@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}临停申请{% endblock %}
+{% block content %}
+<h2>临停申请</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+  |
+  <a href="{% url 'vehicle_mgmt:household_temp_request_create' %}">提交临停申请</a>
+</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>车牌号</th><th>进入时间</th><th>离开时间</th><th>事由</th><th>状态</th><th>申请时间</th></tr>
+  </thead>
+  <tbody>
+    {% for r in requests %}
+    <tr>
+      <td>{{ r.plate_number }}</td>
+      <td>{{ r.start_time|date:"Y-m-d H:i" }}</td>
+      <td>{{ r.end_time|date:"Y-m-d H:i" }}</td>
+      <td>{{ r.purpose|default:"-" }}</td>
+      <td>{{ r.get_status_display }}</td>
+      <td>{{ r.created_at|date:"Y-m-d H:i" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">暂无临停申请。<a href="{% url 'vehicle_mgmt:household_temp_request_create' %}">提交申请</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

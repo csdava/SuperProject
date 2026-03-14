@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}批量生成账单 - 管理员{% endblock %}
+{% block content %}
+<h2>批量生成账单</h2>
+<p><a href="{% url 'property_fees:admin_bill_list' %}">返回账单列表</a></p>
+<p>为指定楼栋下所有房间生成同一账期、同一费用类型的账单（已存在相同房间+类型+账期的不会重复生成）。</p>
+<form method="post" action="">
+  {% csrf_token %}
+  <p>
+    <label>账期</label>
+    <input type="text" name="period" required placeholder="如：2024-01">
+  </p>
+  <p>
+    <label>费用类型</label>
+    <select name="fee_type" required>
+      <option value="">请选择</option>
+      {% for t in fee_types %}
+      <option value="{{ t.pk }}">{{ t.name }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <label>楼栋（不选则全部房间）</label>
+    <select name="building">
+      <option value="">全部</option>
+      {% for b in buildings %}
+      <option value="{{ b.id }}">{{ b.name }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <label>默认应收金额（元）</label>
+    <input type="number" name="default_amount" step="0.01" min="0" value="0" placeholder="0">
+  </p>
+  <button type="submit">批量生成</button>
+</form>
+{% endblock %}

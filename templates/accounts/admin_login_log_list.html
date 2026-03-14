@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}登录日志 - 系统管理{% endblock %}
+{% block content %}
+<h2>登录日志</h2>
+<p><a href="{% url 'accounts:dashboard_admin' %}">返回管理后台</a></p>
+
+<form method="get" style="margin:1em 0;">
+  <select name="success">
+    <option value="">全部</option>
+    <option value="1" {% if success_filter == '1' %}selected{% endif %}>成功</option>
+    <option value="0" {% if success_filter == '0' %}selected{% endif %}>失败</option>
+  </select>
+  <input type="text" name="q" value="{{ q }}" placeholder="尝试登录用户名">
+  <button type="submit">查询</button>
+</form>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>尝试用户名</th>
+      <th>对应用户</th>
+      <th>结果</th>
+      <th>IP</th>
+      <th>时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in page_obj %}
+    <tr>
+      <td>{{ log.username_attempted|default:"-" }}</td>
+      <td>{% if log.user %}{{ log.user.username }}{% else %}-{% endif %}</td>
+      <td>{% if log.success %}成功{% else %}失败{% endif %}</td>
+      <td>{{ log.ip_address|default:"-" }}</td>
+      <td>{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page_obj.has_other_pages %}
+<p>
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if success_filter %}&success={{ success_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}">上一页</a>{% endif %}
+  第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if success_filter %}&success={{ success_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}">下一页</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

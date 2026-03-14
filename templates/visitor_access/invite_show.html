@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}访客邀请核验{% endblock %}
+{% block content %}
+<h2>访客邀请核验</h2>
+{% if invalid %}
+<p style="color:red;">该邀请已失效或已过期，请勿放行。</p>
+{% else %}
+<p style="color:green;">邀请有效，请核验访客身份后放行。</p>
+{% endif %}
+<table class="simple-table">
+  <tbody>
+    <tr><th>访客姓名</th><td>{{ invite.visitor_name }}</td></tr>
+    <tr><th>访客电话</th><td>{{ invite.visitor_phone|default:"-" }}</td></tr>
+    <tr><th>到访房间</th><td>{{ invite.room }}</td></tr>
+    <tr><th>有效期至</th><td>{{ invite.valid_until|date:"Y-m-d H:i" }}</td></tr>
+    <tr><th>状态</th><td>{{ invite.get_status_display }}</td></tr>
+  </tbody>
+</table>
+<p class="text-muted">本页面供门岗或访客出示使用，无需登录。</p>
+{% endblock %}

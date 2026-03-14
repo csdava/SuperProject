@@ -24,6 +24,9 @@ from .models import (
     CommunityActivity,
     ActivityRegistration,
     NeighborhoodPost,
+    ServiceBooking,
+    ParcelRecord,
+    LostItemReport,
 )
 from .forms import (
     HouseholdProfileForm,
@@ -37,6 +40,9 @@ from .forms import (
     AnnouncementForm,
     CommunityActivityForm,
     NeighborhoodPostForm,
+    ServiceBookingForm,
+    ParcelRecordForm,
+    LostItemReportForm,
 )
 
 User = get_user_model()
@@ -964,3 +970,113 @@ def household_neighborhood_delete(request, pk):
         messages.success(request, "已删除。")
         return redirect("community_core:household_neighborhood_my_posts")
     return render(request, "community_core/household_neighborhood_confirm_delete.html", {"post": post})
+
+
+# ---------- 户主端：社区服务（家政预约、快递代收、物品报失） ----------
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_service_booking_list(request):
+    """我的家政预约列表。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    bookings = ServiceBooking.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "community_core/household_service_booking_list.html", {"bookings": bookings})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_service_booking_create(request):
+    """提交家政预约。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    if request.method == "POST":
+        form = ServiceBookingForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.save()
+            messages.success(request, "预约已提交，请等待物业联系。")
+            return redirect("community_core:household_service_booking_list")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = ServiceBookingForm()
+    return render(request, "community_core/household_service_booking_form.html", {"form": form})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_parcel_list(request):
+    """我的快递代收记录。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    parcels = ParcelRecord.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "community_core/household_parcel_list.html", {"parcels": parcels})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_parcel_create(request):
+    """登记快递代收。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    if request.method == "POST":
+        form = ParcelRecordForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.save()
+            messages.success(request, "已登记，取件后可在列表中标记已取。")
+            return redirect("community_core:household_parcel_list")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = ParcelRecordForm()
+    return render(request, "community_core/household_parcel_form.html", {"form": form})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_parcel_mark_taken(request, pk):
+    """标记快递已取（仅接受 POST）。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    if request.method != "POST":
+        return redirect("community_core:household_parcel_list")
+    parcel = get_object_or_404(ParcelRecord, pk=pk, user=request.user)
+    if parcel.status == ParcelRecord.Status.PENDING:
+        parcel.status = ParcelRecord.Status.TAKEN
+        parcel.taken_at = timezone.now()
+        parcel.save(update_fields=["status", "taken_at"])
+        messages.success(request, "已标记为已取。")
+    return redirect("community_core:household_parcel_list")
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_lost_report_list(request):
+    """我的物品报失列表。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    reports = LostItemReport.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "community_core/household_lost_report_list.html", {"reports": reports})
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_lost_report_create(request):
+    """提交物品报失。"""
+    denied = _require_household(request)
+    if denied:
+        return denied
+    if request.method == "POST":
+        form = LostItemReportForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.save()
+            messages.success(request, "报失已提交，如有找到会联系您。")
+            return redirect("community_core:household_lost_report_list")
+        messages.error(request, "请修正表单错误。")
+    else:
+        form = LostItemReportForm()
+    return render(request, "community_core/household_lost_report_form.html", {"form": form})

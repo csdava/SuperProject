@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, LoginLog, AuditLog, SystemConfig
 
 
 class UserProfileInline(admin.StackedInline):
@@ -47,3 +47,29 @@ class UserProfileAdmin(admin.ModelAdmin):
     def reject_selected(self, request, queryset):
         n = queryset.update(is_approved=False)
         self.message_user(request, f"已拒绝 {n} 名用户。")
+
+
+@admin.register(LoginLog)
+class LoginLogAdmin(admin.ModelAdmin):
+    list_display = ("username_attempted", "user", "success", "ip_address", "created_at")
+    list_filter = ("success",)
+    search_fields = ("username_attempted",)
+    readonly_fields = ("user", "username_attempted", "success", "ip_address", "created_at")
+
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = ("user", "action", "message", "created_at")
+    list_filter = ("action",)
+    search_fields = ("action", "message")
+    readonly_fields = ("user", "action", "message", "created_at")
+
+
+@admin.register(SystemConfig)
+class SystemConfigAdmin(admin.ModelAdmin):
+    list_display = ("key", "value_preview", "description", "updated_at")
+    search_fields = ("key", "description")
+
+    def value_preview(self, obj):
+        return (obj.value[:50] + "…") if obj.value and len(obj.value) > 50 else (obj.value or "")
+    value_preview.short_description = "参数值"

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{% if is_edit %}编辑账单{% else %}生成账单{% endif %}{% endblock %}
+{% block content %}
+<h2>{% if is_edit %}编辑账单{% else %}生成账单{% endif %}</h2>
+<p>
+  <a href="{% url 'property_fees:admin_bill_list' %}">返回账单列表</a>
+  {% if is_edit and bill %}| <a href="{% url 'property_fees:admin_bill_bulk' %}">批量生成</a>{% endif %}
+</p>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">保存</button>
+</form>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}账单管理 - 管理员{% endblock %}
+{% block content %}
+<h2>账单管理</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+  |
+  <a href="{% url 'property_fees:admin_bill_create' %}">生成账单</a>
+  |
+  <a href="{% url 'property_fees:admin_bill_bulk' %}">批量生成</a>
+  |
+  <a href="{% url 'property_fees:admin_fee_stats' %}">收费率统计</a>
+</p>
+
+<form method="get" class="filter-form">
+  <p>
+    <label>楼栋</label>
+    <select name="building">
+      <option value="">全部</option>
+      {% for b in buildings %}
+      <option value="{{ b.id }}" {% if building_id|stringformat:"s" == b.id|stringformat:"s" %}selected{% endif %}>{{ b.name }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p><label>账期</label><input type="text" name="period" value="{{ period }}" placeholder="如 2024-01"></p>
+  <p>
+    <label>状态</label>
+    <select name="status">
+      <option value="">全部</option>
+      <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>待缴费</option>
+      <option value="overdue" {% if status_filter == "overdue" %}selected{% endif %}>已逾期</option>
+      <option value="paid" {% if status_filter == "paid" %}selected{% endif %}>已缴清</option>
+    </select>
+  </p>
+  <p><button type="submit">筛选</button> <a href="{% url 'property_fees:admin_bill_list' %}">重置</a></p>
+</form>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>房间</th>
+      <th>费用类型</th>
+      <th>账期</th>
+      <th>应收</th>
+      <th>已缴</th>
+      <th>状态</th>
+      <th>到期日</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in bills %}
+    <tr>
+      <td>{{ b.room }}</td>
+      <td>{{ b.fee_type.name }}</td>
+      <td>{{ b.period }}</td>
+      <td>{{ b.amount }} 元</td>
+      <td>{{ b.paid_amount }} 元</td>
+      <td>{{ b.get_status_display }}</td>
+      <td>{{ b.due_date|date:"Y-m-d"|default:"-" }}</td>
+      <td><a href="{% url 'property_fees:admin_bill_edit' b.pk %}">编辑</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="8">暂无账单。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
