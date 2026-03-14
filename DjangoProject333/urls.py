@@ -10,9 +10,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("", include("community_core.urls")),
-    # 后续按模块挂载：
-    # path("fees/", include("property_fees.urls")),
-    # path("repair/", include("repair.urls")),
+    path("repair/", include("repair.urls")),
     # path("visitor/", include("visitor_access.urls")),
     # path("security/", include("security.urls")),
     # path("services/", include("life_services.urls")),

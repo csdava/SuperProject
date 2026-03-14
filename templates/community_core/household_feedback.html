@@ -1,0 +1,32 @@
+{% extends "community_core/household_profile_base.html" %}
+{% block title %}个人中心 - 意见反馈{% endblock %}
+{% block profile_content %}
+<h3>提交反馈</h3>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">提交</button>
+</form>
+
+<h3>我的反馈记录</h3>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>时间</th>
+      <th>内容</th>
+      <th>回复</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for fb in feedback_list %}
+    <tr>
+      <td>{{ fb.created_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ fb.content }}</td>
+      <td>{% if fb.reply %}{{ fb.reply }}{% else %}-{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">暂无反馈记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}巡检任务 - {{ task.title }}{% endblock %}
+{% block content %}
+<h2>巡检任务详情</h2>
+<p><a href="{% url 'repair:maintenance_inspection_list' %}">返回巡检列表</a></p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>标题</th><td>{{ task.title }}</td></tr>
+    <tr><th>巡检日期</th><td>{{ task.task_date|date:"Y-m-d" }}</td></tr>
+    <tr><th>状态</th><td>{{ task.get_status_display }}</td></tr>
+    <tr><th>路线/区域说明</th><td>{{ task.route_remark|default:"-" }}</td></tr>
+  </tbody>
+</table>
+
+{% if task.status == "in_progress" %}
+<form method="post" style="display:inline;" onsubmit="return confirm('确认完成本次巡检？');">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="complete">
+  <button type="submit">完成巡检</button>
+</form>
+{% endif %}
+
+<h3>巡检打卡</h3>
+{% if check_ins %}
+<table class="simple-table">
+  <thead>
+    <tr><th>打卡时间</th><th>位置</th><th>备注</th></tr>
+  </thead>
+  <tbody>
+    {% for c in check_ins %}
+    <tr>
+      <td>{{ c.check_in_at|date:"Y-m-d H:i:s" }}</td>
+      <td>{{ c.location }}</td>
+      <td>{{ c.remark|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无打卡记录。</p>
+{% endif %}
+{% if task.status != "completed" %}
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="checkin">
+  {{ checkin_form.as_p }}
+  <button type="submit">打卡</button>
+</form>
+{% endif %}
+
+<h3>异常上报</h3>
+{% if abnormalities %}
+<table class="simple-table">
+  <thead>
+    <tr><th>上报时间</th><th>严重程度</th><th>描述</th><th>处理状态</th></tr>
+  </thead>
+  <tbody>
+    {% for a in abnormalities %}
+    <tr>
+      <td>{{ a.reported_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ a.get_severity_display }}</td>
+      <td>{{ a.content }}</td>
+      <td>{{ a.get_status_display }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无异常上报。</p>
+{% endif %}
+{% if task.status != "completed" %}
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="abnormality">
+  {{ abnormality_form.as_p }}
+  <button type="submit">上报异常</button>
+</form>
+{% endif %}
+{% endblock %}

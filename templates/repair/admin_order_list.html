@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}工单管理 - 管理员{% endblock %}
+{% block content %}
+<h2>工单管理</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+</p>
+
+<form method="get" class="filter-form">
+  <p>
+    <label for="id_q">关键字</label>
+    <input type="text" id="id_q" name="q" value="{{ q }}" placeholder="标题 / 描述 / 报修人">
+  </p>
+  <p>
+    <label for="id_status">状态</label>
+    <select id="id_status" name="status">
+      <option value="">全部</option>
+      <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>待处理</option>
+      <option value="assigned" {% if status_filter == "assigned" %}selected{% endif %}>已派单</option>
+      <option value="in_progress" {% if status_filter == "in_progress" %}selected{% endif %}>处理中</option>
+      <option value="completed" {% if status_filter == "completed" %}selected{% endif %}>已完成</option>
+      <option value="cancelled" {% if status_filter == "cancelled" %}selected{% endif %}>已取消</option>
+    </select>
+  </p>
+  <p>
+    <label for="id_assigned">指派人</label>
+    <select id="id_assigned" name="assigned">
+      <option value="">全部</option>
+      {% for u in maintenance_users %}
+      <option value="{{ u.pk }}" {% if assigned_id|stringformat:"s" == u.pk|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <label for="id_date_from">提交日期起</label>
+    <input type="date" id="id_date_from" name="date_from" value="{{ date_from }}">
+  </p>
+  <p>
+    <label for="id_date_to">提交日期止</label>
+    <input type="date" id="id_date_to" name="date_to" value="{{ date_to }}">
+  </p>
+  <p>
+    <button type="submit">搜索</button>
+    <a href="{% url 'repair:admin_order_list' %}">重置</a>
+  </p>
+</form>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>标题</th>
+      <th>类型</th>
+      <th>状态</th>
+      <th>报修人</th>
+      <th>房间</th>
+      <th>指派人</th>
+      <th>提交时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.title }}</td>
+      <td>{{ o.get_category_display }}</td>
+      <td>{{ o.get_status_display }}</td>
+      <td>{{ o.reporter.username }}</td>
+      <td>{% if o.room %}{{ o.room }}{% else %}-{% endif %}</td>
+      <td>{% if o.assigned_to %}{{ o.assigned_to.username }}{% else %}-{% endif %}</td>
+      <td>{{ o.created_at|date:"Y-m-d H:i" }}</td>
+      <td><a href="{% url 'repair:admin_order_detail' o.pk %}">查看 / 指派</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="8">暂无工单。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

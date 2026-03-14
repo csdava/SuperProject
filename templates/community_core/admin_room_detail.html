@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}房间 {{ room }} - 管理员{% endblock %}
+{% block content %}
+<h2>房间详情：{{ room }}</h2>
+<p>
+  <a href="{% url 'community_core:admin_room_list' %}">返回房间列表</a>
+  |
+  <a href="{% url 'community_core:admin_room_edit' room.pk %}">编辑房间</a>
+</p>
+
+<h3>房间信息</h3>
+<table class="simple-table">
+  <tbody>
+    <tr><th>楼栋/单元</th><td>{{ room.unit.building.name }} / {{ room.unit.name }}</td></tr>
+    <tr><th>房号</th><td>{{ room.room_no }}</td></tr>
+    <tr><th>楼层</th><td>{{ room.floor_no|default:"-" }}</td></tr>
+    <tr><th>建筑面积</th><td>{% if room.area %}{{ room.area }} ㎡{% else %}-{% endif %}</td></tr>
+    <tr><th>房间状态</th><td>{{ room.get_status_display }}</td></tr>
+    <tr><th>产权人</th><td>{{ room.owner_name|default:"-" }}</td></tr>
+    <tr><th>产权人电话</th><td>{{ room.owner_phone|default:"-" }}</td></tr>
+    <tr><th>绑定户主账号</th><td>{% if room.owner_user %}{{ room.owner_user.username }}{% else %}未绑定{% endif %}</td></tr>
+  </tbody>
+</table>
+
+<h3>本户住户（家庭成员）</h3>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>姓名</th>
+      <th>电话</th>
+      <th>是否户主</th>
+      <th>与户主关系</th>
+      <th>状态</th>
+      <th>标签</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in residents %}
+    <tr>
+      <td>{{ m.name }}</td>
+      <td>{{ m.phone|default:"-" }}</td>
+      <td>{% if m.is_householder %}是{% else %}否{% endif %}</td>
+      <td>{{ m.relation_to_householder|default:"-" }}</td>
+      <td>{{ m.get_status_display }}</td>
+      <td>{% for t in m.tags.all %}<span class="tag">{{ t.name }}</span>{% empty %}-{% endfor %}</td>
+      <td>
+        <a href="{% url 'community_core:admin_resident_detail' m.pk %}">详情</a>
+        |
+        <a href="{% url 'community_core:admin_resident_edit' m.pk %}">编辑</a>
+        |
+        <a href="{% url 'community_core:admin_resident_delete' m.pk %}">删除</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">暂无住户。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>添加住户</h4>
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="add_resident">
+  {{ resident_form.as_p }}
+  <button type="submit">添加住户</button>
+</form>
+
+<h3>产权变更记录</h3>
+<table class="simple-table">
+  <thead>
+    <tr><th>变更时间</th><th>原产权人</th><th>新产权人</th><th>原因</th><th>操作人</th></tr>
+  </thead>
+  <tbody>
+    {% for c in ownership_changes %}
+    <tr>
+      <td>{{ c.changed_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ c.old_owner_name|default:"-" }}</td>
+      <td>{{ c.new_owner_name }}</td>
+      <td>{{ c.reason|default:"-" }}</td>
+      <td>{{ c.operator.username|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无产权变更记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>登记产权变更</h4>
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="add_ownership">
+  <p>当前产权人：{{ room.owner_name|default:"（空）" }}</p>
+  {{ ownership_form.room }}
+  <p><label>新产权人姓名</label>{{ ownership_form.new_owner_name }}{{ ownership_form.new_owner_name.errors }}</p>
+  <p><label>变更原因</label>{{ ownership_form.reason }}{{ ownership_form.reason.errors }}</p>
+  <button type="submit">登记</button>
+</form>
+{% endblock %}

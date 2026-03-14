@@ -28,10 +28,9 @@
       <li>
         <strong>报事报修</strong>
         <ul>
-          <li><a href="#">我要报修</a></li>
-          <li><a href="#">报修进度查看</a></li>
-          <li><a href="#">历史工单</a></li>
-          <li><a href="#">服务评价</a></li>
+          <li><a href="{% url 'repair:household_repair_create' %}">我要报修</a></li>
+          <li><a href="{% url 'repair:household_repair_list' %}">报修进度 / 历史工单</a></li>
+          <li><a href="{% url 'repair:household_repair_list' %}?status=completed">已完成（可评价）</a></li>
         </ul>
       </li>
       <li>
@@ -73,12 +72,13 @@
       <li>
         <strong>个人中心</strong>
         <ul>
-          <li><a href="#">个人信息</a></li>
-          <li><a href="#">家庭成员</a></li>
-          <li><a href="#">房屋信息</a></li>
-          <li><a href="#">修改密码</a></li>
-          <li><a href="#">消息通知</a></li>
-          <li><a href="#">意见反馈</a></li>
+          <li><a href="{% url 'community_core:household_profile_index' %}">个人中心首页</a></li>
+          <li><a href="{% url 'community_core:household_personal_info' %}">个人信息</a></li>
+          <li><a href="{% url 'community_core:household_family_members' %}">家庭成员</a></li>
+          <li><a href="{% url 'community_core:household_housing_info' %}">房屋信息</a></li>
+          <li><a href="{% url 'community_core:household_change_password' %}">修改密码</a></li>
+          <li><a href="{% url 'community_core:household_messages' %}">消息通知</a></li>
+          <li><a href="{% url 'community_core:household_feedback' %}">意见反馈</a></li>
         </ul>
       </li>
     </ul>

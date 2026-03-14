@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}工单统计 - 维修人员{% endblock %}
+{% block content %}
+<h2>工单统计</h2>
+<p><a href="{% url 'repair:maintenance_order_list' %}">返回工单列表</a></p>
+
+<div class="cards-row">
+  <div class="card">
+    <h4>待处理</h4>
+    <p class="card-number">{{ stats.pending }}</p>
+    <p class="card-desc">已派给我、尚未开始处理的工单</p>
+  </div>
+  <div class="card">
+    <h4>处理中</h4>
+    <p class="card-number">{{ stats.in_progress }}</p>
+    <p class="card-desc">正在维修的工单</p>
+  </div>
+  <div class="card">
+    <h4>已完成（全部）</h4>
+    <p class="card-number">{{ stats.completed_total }}</p>
+    <p class="card-desc">历史完成工单数</p>
+  </div>
+  <div class="card">
+    <h4>本月完成</h4>
+    <p class="card-number">{{ stats.completed_this_month }}</p>
+    <p class="card-desc">本月已完工单数</p>
+  </div>
+</div>
+{% endblock %}

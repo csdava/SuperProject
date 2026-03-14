@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}编辑住户 - 管理员{% endblock %}
+{% block content %}
+<h2>编辑住户：{{ resident.name }}</h2>
+<p>
+  <a href="{% url 'community_core:admin_resident_detail' resident.pk %}">返回住户详情</a>
+  |
+  <a href="{% url 'community_core:admin_room_detail' resident.room_id %}">从房间查看</a>
+</p>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">保存</button>
+</form>
+{% endblock %}

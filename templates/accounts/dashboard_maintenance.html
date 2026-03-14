@@ -11,37 +11,34 @@
       <li>
         <strong>我的工单</strong>
         <ul>
-          <li><a href="#">待处理工单</a></li>
-          <li><a href="#">处理中工单</a></li>
-          <li><a href="#">已完成工单</a></li>
-          <li><a href="#">工单统计</a></li>
+          <li><a href="{% url 'repair:maintenance_order_list' %}">工单列表</a></li>
+          <li><a href="{% url 'repair:maintenance_order_list' %}?status=pending">待处理工单</a></li>
+          <li><a href="{% url 'repair:maintenance_order_list' %}?status=in_progress">处理中工单</a></li>
+          <li><a href="{% url 'repair:maintenance_order_list' %}?status=completed">已完成工单</a></li>
+          <li><a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a></li>
         </ul>
       </li>
       <li>
         <strong>接单处理</strong>
         <ul>
-          <li><a href="#">自动接单</a></li>
-          <li><a href="#">手动接单</a></li>
-          <li><a href="#">工单转派</a></li>
-          <li><a href="#">工单超时提醒</a></li>
+          <li><a href="{% url 'repair:maintenance_accept_settings' %}">自动接单设置</a></li>
+          <li><a href="{% url 'repair:maintenance_available_orders' %}">可接单工单（手动接单）</a></li>
+          <li><a href="{% url 'repair:maintenance_overdue_list' %}">工单超时提醒</a></li>
         </ul>
       </li>
       <li>
         <strong>维修管理</strong>
         <ul>
-          <li><a href="#">维修进度上报</a></li>
-          <li><a href="#">配件使用登记</a></li>
-          <li><a href="#">完工确认</a></li>
-          <li><a href="#">费用结算（如有）</a></li>
+          <li><a href="{% url 'repair:maintenance_order_list' %}">我的工单</a>（进度上报/配件登记/完工/费用在工单详情内）</li>
         </ul>
       </li>
       <li>
         <strong>巡检任务</strong>
         <ul>
-          <li><a href="#">巡检计划</a></li>
-          <li><a href="#">巡检打卡</a></li>
-          <li><a href="#">异常上报</a></li>
-          <li><a href="#">巡检记录</a></li>
+          <li><a href="{% url 'repair:maintenance_inspection_list' %}">巡检任务列表</a></li>
+          <li><a href="{% url 'repair:maintenance_inspection_list' %}?status=pending">待执行</a></li>
+          <li><a href="{% url 'repair:maintenance_inspection_list' %}?status=in_progress">进行中</a></li>
+          <li><a href="{% url 'repair:maintenance_inspection_list' %}?status=completed">巡检记录（已完成）</a></li>
         </ul>
       </li>
       <li>
@@ -65,10 +62,11 @@
       <li>
         <strong>个人中心</strong>
         <ul>
-          <li><a href="#">工作排班</a></li>
-          <li><a href="#">工资单</a></li>
-          <li><a href="#">技能认证</a></li>
-          <li><a href="#">培训资料</a></li>
+          <li><a href="{% url 'repair:maintenance_profile_index' %}">个人中心首页</a></li>
+          <li><a href="{% url 'repair:maintenance_schedule_list' %}">工作排班</a></li>
+          <li><a href="{% url 'repair:maintenance_payslip_list' %}">工资单</a></li>
+          <li><a href="{% url 'repair:maintenance_cert_list' %}">技能认证</a></li>
+          <li><a href="{% url 'repair:maintenance_training_list' %}">培训资料</a></li>
         </ul>
       </li>
     </ul>

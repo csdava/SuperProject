@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}接单设置 - 自动接单{% endblock %}
+{% block content %}
+<h2>接单设置</h2>
+<p>
+  <a href="{% url 'repair:maintenance_available_orders' %}">可接单工单</a>
+  |
+  <a href="{% url 'repair:maintenance_order_list' %}">我的工单</a>
+</p>
+
+<p>开启「自动接单」后，新提交的工单将按当前待办量自动派给您（与其他开启自动接单的维修人员中待办最少的一人）。</p>
+
+<form method="post" action="">
+  {% csrf_token %}
+  <p>
+    <label>
+      <input type="radio" name="auto_accept" value="0" {% if not pref.auto_accept %}checked{% endif %}>
+      关闭自动接单（仅手动接单）
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="radio" name="auto_accept" value="1" {% if pref.auto_accept %}checked{% endif %}>
+      开启自动接单
+    </label>
+  </p>
+  <button type="submit">保存</button>
+</form>
+{% endblock %}

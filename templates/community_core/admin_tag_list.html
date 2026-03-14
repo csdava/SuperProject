@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}住户标签管理 - 管理员{% endblock %}
+{% block content %}
+<h2>住户标签管理</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
+  |
+  <a href="{% url 'community_core:admin_tag_create' %}">新增标签</a>
+</p>
+<p>标签可用于标记 VIP 业主、特殊需求、欠费等，在住户详情或房间住户中为住户勾选。</p>
+<table class="simple-table">
+  <thead>
+    <tr><th>标签名称</th><th>说明</th><th>使用人数</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for t in tags %}
+    <tr>
+      <td>{{ t.name }}</td>
+      <td>{{ t.description|default:"-" }}</td>
+      <td>{{ t.resident_count }}</td>
+      <td>
+        <a href="{% url 'community_core:admin_tag_edit' t.pk %}">编辑</a>
+        {% if t.resident_count == 0 %}
+        | <a href="{% url 'community_core:admin_tag_delete' t.pk %}">删除</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">暂无标签。<a href="{% url 'community_core:admin_tag_create' %}">新增标签</a></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

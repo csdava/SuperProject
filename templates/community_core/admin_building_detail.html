@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ building.name }} - 楼栋详情{% endblock %}
+{% block content %}
+<h2>楼栋：{{ building.name }}</h2>
+<p>
+  <a href="{% url 'community_core:admin_building_list' %}">返回楼栋列表</a>
+  |
+  <a href="{% url 'community_core:admin_building_edit' building.pk %}">编辑楼栋</a>
+</p>
+<p>编号：{{ building.code }} | 地址：{{ building.address|default:"-" }}</p>
+
+<h3>单元列表</h3>
+<table class="simple-table">
+  <thead>
+    <tr><th>单元名称</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for u in units %}
+    <tr>
+      <td>{{ u.name }}</td>
+      <td><a href="{% url 'community_core:admin_unit_edit' u.pk %}">编辑</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="2">暂无单元。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>添加单元</h3>
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="add_unit">
+  {{ unit_form.building }}
+  <p>
+    <label for="id_name">单元名称/编号</label>
+    {{ unit_form.name }}
+    {{ unit_form.name.errors }}
+  </p>
+  <button type="submit">添加单元</button>
+</form>
+{% endblock %}

@@ -9,6 +9,12 @@ from django.db import models
 from .forms import RegisterForm, LoginForm
 from .models import UserProfile
 
+# 工单待处理数（管理台展示）
+try:
+    from repair.models import RepairOrder
+except ImportError:
+    RepairOrder = None
+
 
 def _get_or_create_profile(user):
     """确保用户有 profile（如超级用户首次登录）。"""
@@ -164,6 +170,11 @@ def dashboard_admin(request):
         .order_by("role")
         .annotate(count=models.Count("id"))
     )
+    pending_orders = 0
+    if RepairOrder is not None:
+        pending_orders = RepairOrder.objects.filter(
+            status__in=(RepairOrder.Status.PENDING, RepairOrder.Status.ASSIGNED)
+        ).count()
 
     context = {
         "pending_approvals": pending_approvals,
@@ -171,5 +182,6 @@ def dashboard_admin(request):
         "approved_users": approved_users,
         "today": today_start.date(),
         "role_stats": role_stats,
+        "pending_orders": pending_orders,
     }
     return render(request, "accounts/dashboard_admin.html", context)

@@ -1,0 +1,30 @@
+{% extends "repair/maintenance_profile_base.html" %}
+{% block title %}工作排班 - 个人中心{% endblock %}
+{% block profile_content %}
+<h3>工作排班</h3>
+<p>近期排班（过去 7 天至未来约 1 个月）。</p>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>日期</th>
+      <th>班次</th>
+      <th>开始时间</th>
+      <th>结束时间</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in schedules %}
+    <tr>
+      <td>{{ s.work_date|date:"Y-m-d" }}</td>
+      <td>{{ s.shift_name }}</td>
+      <td>{% if s.start_time %}{{ s.start_time|time:"H:i" }}{% else %}-{% endif %}</td>
+      <td>{% if s.end_time %}{{ s.end_time|time:"H:i" }}{% else %}-{% endif %}</td>
+      <td>{{ s.remark|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无排班记录。排班由管理员在后台维护。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

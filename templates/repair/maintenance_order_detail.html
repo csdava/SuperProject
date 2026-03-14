@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}工单详情 - {{ order.title }}{% endblock %}
+{% block content %}
+<h2>工单详情</h2>
+<p><a href="{% url 'repair:maintenance_order_list' %}">返回工单列表</a></p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>标题</th><td>{{ order.title }}</td></tr>
+    <tr><th>类型</th><td>{{ order.get_category_display }}</td></tr>
+    <tr><th>状态</th><td>{{ order.get_status_display }}</td></tr>
+    <tr><th>问题描述</th><td>{{ order.description }}</td></tr>
+    <tr><th>联系电话</th><td>{{ order.contact_phone|default:"-" }}</td></tr>
+    <tr><th>报修人</th><td>{{ order.reporter.username }}</td></tr>
+    {% if order.room %}
+    <tr><th>报修房间</th><td>{{ order.room }}</td></tr>
+    {% endif %}
+    <tr><th>提交时间</th><td>{{ order.created_at|date:"Y-m-d H:i" }}</td></tr>
+    {% if order.assigned_to %}
+    <tr><th>当前处理人</th><td>{{ order.assigned_to.username }}</td></tr>
+    {% endif %}
+    {% if order.admin_remark %}
+    <tr><th>管理备注</th><td>{{ order.admin_remark }}</td></tr>
+    {% endif %}
+    {% if order.worker_remark %}
+    <tr><th>维修备注</th><td>{{ order.worker_remark }}</td></tr>
+    {% endif %}
+    {% if order.completed_at %}
+    <tr><th>完成时间</th><td>{{ order.completed_at|date:"Y-m-d H:i" }}</td></tr>
+    {% endif %}
+    {% if order.cost_amount is not None %}
+    <tr><th>费用金额</th><td>{{ order.cost_amount }} 元</td></tr>
+    {% if order.cost_note %}<tr><th>费用说明</th><td>{{ order.cost_note }}</td></tr>{% endif %}
+    {% endif %}
+  </tbody>
+</table>
+
+<h3>操作</h3>
+{% if not order.assigned_to %}
+<form method="post" style="display:inline;" onsubmit="return confirm('确认接单？');">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="accept">
+  <button type="submit">接单</button>
+</form>
+{% else %}
+  {% if order.assigned_to == user %}
+    {% if order.status == "pending" or order.status == "assigned" %}
+    <form method="post" style="display:inline;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="start">
+      <button type="submit">开始处理</button>
+    </form>
+    {% endif %}
+    {% if order.status == "in_progress" %}
+    <form method="post" style="display:inline;" onsubmit="return confirm('确认完工？');" class="complete-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="complete">
+      <label>费用金额（元，选填）</label> <input type="number" name="cost_amount" step="0.01" min="0" placeholder="选填">
+      <label>费用说明</label> <input type="text" name="cost_note" placeholder="选填" maxlength="200">
+      <button type="submit">完工确认</button>
+    </form>
+    {% endif %}
+    {% if maintenance_users %}
+    <form method="post" style="display:inline;" onsubmit="return confirm('确认转派给该维修人员？');">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="reassign">
+      <label>转派给：</label>
+      <select name="target_user_id" required>
+        <option value="">请选择</option>
+        {% for u in maintenance_users %}
+        <option value="{{ u.id }}">{{ u.username }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">转派</button>
+    </form>
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+<h3>维修进度上报</h3>
+{% if progress_logs %}
+<table class="simple-table">
+  <thead><tr><th>时间</th><th>内容</th><th>上报人</th></tr></thead>
+  <tbody>
+    {% for log in progress_logs %}
+    <tr>
+      <td>{{ log.created_at|date:"m-d H:i" }}</td>
+      <td>{{ log.content }}</td>
+      <td>{{ log.created_by.username|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无进度记录。</p>
+{% endif %}
+{% if order.assigned_to == user and order.status != "completed" and order.status != "cancelled" %}
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="add_progress">
+  {{ progress_form.as_p }}
+  <button type="submit">上报进度</button>
+</form>
+{% endif %}
+
+<h3>配件使用登记</h3>
+{% if part_usages %}
+<table class="simple-table">
+  <thead><tr><th>配件名称</th><th>数量</th><th>单位</th><th>备注</th><th>登记时间</th></tr></thead>
+  <tbody>
+    {% for p in part_usages %}
+    <tr>
+      <td>{{ p.part_name }}</td>
+      <td>{{ p.quantity }}</td>
+      <td>{{ p.unit }}</td>
+      <td>{{ p.remark|default:"-" }}</td>
+      <td>{{ p.created_at|date:"m-d H:i" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无配件登记。</p>
+{% endif %}
+{% if order.assigned_to == user and order.status != "completed" and order.status != "cancelled" %}
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="add_part">
+  {{ part_form.as_p }}
+  <button type="submit">登记配件</button>
+</form>
+{% endif %}
+
+<h3>备注与费用</h3>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">保存备注/费用</button>
+</form>
+{% endblock %}

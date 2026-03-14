@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}我的工单 - 维修人员{% endblock %}
+{% block content %}
+<h2>我的工单</h2>
+<p>
+  <a href="{% url 'accounts:dashboard_maintenance' %}">返回工作台</a>
+  |
+  <a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a>
+</p>
+
+<p>
+  待处理 <strong>{{ stats.pending }}</strong> |
+  处理中 <strong>{{ stats.in_progress }}</strong> |
+  已完成 <strong>{{ stats.completed }}</strong>
+</p>
+
+<p>
+  筛选：
+  <a href="{% url 'repair:maintenance_order_list' %}">全部可操作</a>
+  <a href="{% url 'repair:maintenance_order_list' %}?status=pending">待处理</a>
+  <a href="{% url 'repair:maintenance_order_list' %}?status=in_progress">处理中</a>
+  <a href="{% url 'repair:maintenance_order_list' %}?status=completed">已完成</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>标题</th>
+      <th>类型</th>
+      <th>状态</th>
+      <th>报修人</th>
+      <th>房间</th>
+      <th>提交时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.title }}</td>
+      <td>{{ o.get_category_display }}</td>
+      <td>{{ o.get_status_display }}</td>
+      <td>{{ o.reporter.username }}</td>
+      <td>{% if o.room %}{{ o.room }}{% else %}-{% endif %}</td>
+      <td>{{ o.created_at|date:"Y-m-d H:i" }}</td>
+      <td><a href="{% url 'repair:maintenance_order_detail' o.pk %}">查看 / 接单</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">暂无工单。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

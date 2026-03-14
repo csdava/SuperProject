@@ -158,3 +158,49 @@ class OwnershipChange(models.Model):
     def __str__(self) -> str:
         return f"{self.room} 产权变更：{self.old_owner_name} → {self.new_owner_name}"
 
+
+class UserMessage(models.Model):
+    """户主端消息通知（系统/物业推送）。"""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="community_messages",
+        verbose_name="接收用户",
+    )
+    title = models.CharField("标题", max_length=100)
+    content = models.TextField("内容", blank=True)
+    is_read = models.BooleanField("已读", default=False)
+    created_at = models.DateTimeField("发送时间", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "用户消息"
+        verbose_name_plural = "用户消息"
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return f"{self.title} -> {self.user.username}"
+
+
+class UserFeedback(models.Model):
+    """户主意见反馈。"""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="community_feedbacks",
+        verbose_name="用户",
+    )
+    content = models.TextField("反馈内容")
+    created_at = models.DateTimeField("提交时间", auto_now_add=True)
+    reply = models.TextField("回复内容", blank=True)
+    replied_at = models.DateTimeField("回复时间", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "用户反馈"
+        verbose_name_plural = "用户反馈"
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return f"{self.user.username} @ {self.created_at}"
+

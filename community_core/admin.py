@@ -7,6 +7,8 @@ from .models import (
     ResidentTag,
     Resident,
     OwnershipChange,
+    UserMessage,
+    UserFeedback,
 )
 
 
@@ -74,3 +76,22 @@ class OwnershipChangeAdmin(admin.ModelAdmin):
         "old_owner_name",
         "new_owner_name",
     )
+
+
+@admin.register(UserMessage)
+class UserMessageAdmin(admin.ModelAdmin):
+    list_display = ("title", "user", "is_read", "created_at")
+    list_filter = ("is_read",)
+    search_fields = ("title", "content", "user__username")
+
+
+@admin.register(UserFeedback)
+class UserFeedbackAdmin(admin.ModelAdmin):
+    list_display = ("user", "content_preview", "created_at", "replied_at")
+    list_filter = ("created_at",)
+    search_fields = ("content", "user__username")
+
+    def content_preview(self, obj):
+        return (obj.content[:40] + "…") if len(obj.content) > 40 else obj.content
+
+    content_preview.short_description = "内容摘要"

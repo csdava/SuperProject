@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>个人中心</h2>
+<nav class="profile-nav">
+  <a href="{% url 'community_core:household_profile_index' %}">概览</a>
+  <a href="{% url 'community_core:household_personal_info' %}">个人信息</a>
+  <a href="{% url 'community_core:household_family_members' %}">家庭成员</a>
+  <a href="{% url 'community_core:household_housing_info' %}">房屋信息</a>
+  <a href="{% url 'community_core:household_change_password' %}">修改密码</a>
+  <a href="{% url 'community_core:household_messages' %}">消息通知</a>
+  <a href="{% url 'community_core:household_feedback' %}">意见反馈</a>
+  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
+</nav>
+{% block profile_content %}{% endblock %}
+{% endblock %}

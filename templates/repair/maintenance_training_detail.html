@@ -1,0 +1,13 @@
+{% extends "repair/maintenance_profile_base.html" %}
+{% block title %}培训资料 - {{ material.title }}{% endblock %}
+{% block profile_content %}
+<h3>{{ material.title }}</h3>
+<p>发布时间：{{ material.created_at|date:"Y-m-d H:i" }}</p>
+<div class="training-content">
+  {{ material.content|linebreaks }}
+</div>
+{% if material.attachment %}
+<p>附件：<a href="{{ material.attachment }}" target="_blank">下载/查看</a></p>
+{% endif %}
+<p><a href="{% url 'repair:maintenance_training_list' %}">返回培训列表</a></p>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}工单详情 - {{ order.title }}{% endblock %}
+{% block content %}
+<h2>工单详情</h2>
+<p>
+  <a href="{% url 'repair:household_repair_list' %}">返回工单列表</a>
+</p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>标题</th><td>{{ order.title }}</td></tr>
+    <tr><th>类型</th><td>{{ order.get_category_display }}</td></tr>
+    <tr><th>状态</th><td>{{ order.get_status_display }}</td></tr>
+    <tr><th>问题描述</th><td>{{ order.description }}</td></tr>
+    <tr><th>联系电话</th><td>{{ order.contact_phone|default:"-" }}</td></tr>
+    {% if order.room %}
+    <tr><th>报修房间</th><td>{{ order.room }}</td></tr>
+    {% endif %}
+    <tr><th>提交时间</th><td>{{ order.created_at|date:"Y-m-d H:i" }}</td></tr>
+    {% if order.updated_at %}
+    <tr><th>更新时间</th><td>{{ order.updated_at|date:"Y-m-d H:i" }}</td></tr>
+    {% endif %}
+    {% if order.admin_remark %}
+    <tr><th>处理备注</th><td>{{ order.admin_remark }}</td></tr>
+    {% endif %}
+    {% if order.completed_at %}
+    <tr><th>完成时间</th><td>{{ order.completed_at|date:"Y-m-d H:i" }}</td></tr>
+    {% endif %}
+  </tbody>
+</table>
+
+{% if evaluation %}
+<h3>我的评价</h3>
+<p>评分：{{ evaluation.rating }} 星；{{ evaluation.comment|default:"无" }}</p>
+{% endif %}
+
+{% if can_evaluate and eval_form %}
+<h3>服务评价</h3>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ eval_form.as_p }}
+  <button type="submit">提交评价</button>
+</form>
+{% endif %}
+{% endblock %}

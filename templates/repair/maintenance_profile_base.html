@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>个人中心（维修人员）</h2>
+<nav class="profile-nav">
+  <a href="{% url 'repair:maintenance_profile_index' %}">概览</a>
+  <a href="{% url 'repair:maintenance_schedule_list' %}">工作排班</a>
+  <a href="{% url 'repair:maintenance_payslip_list' %}">工资单</a>
+  <a href="{% url 'repair:maintenance_cert_list' %}">技能认证</a>
+  <a href="{% url 'repair:maintenance_training_list' %}">培训资料</a>
+  <a href="{% url 'accounts:dashboard_maintenance' %}">返回工作台</a>
+</nav>
+{% block profile_content %}{% endblock %}
+{% endblock %}

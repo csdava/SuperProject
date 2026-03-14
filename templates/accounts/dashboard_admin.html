@@ -20,16 +20,11 @@
         <strong>住户管理</strong>
         <ul>
           <li><a href="{% url 'community_core:admin_resident_list' %}">住户信息管理（列表/搜索/详情）</a></li>
+          <li><a href="{% url 'community_core:admin_room_list' %}">房间信息维护 / 家庭成员管理</a></li>
+          <li><a href="{% url 'community_core:admin_building_list' %}">楼栋单元管理</a></li>
+          <li><a href="{% url 'community_core:admin_ownership_list' %}">产权变更记录</a></li>
+          <li><a href="{% url 'community_core:admin_tag_list' %}">住户标签管理（VIP/特殊需求/欠费标记）</a></li>
           <li><a href="#">住户信息批量导入</a></li>
-          <li><a href="#">住户状态管理</a></li>
-          <li><a href="#">家庭成员管理</a></li>
-          <li><a href="#">楼栋单元管理</a></li>
-          <li><a href="#">房间信息维护</a></li>
-          <li><a href="#">产权变更记录</a></li>
-          <li><a href="#">住户标签管理</a></li>
-          <li><a href="#">VIP 业主标记</a></li>
-          <li><a href="#">特殊需求标注</a></li>
-          <li><a href="#">欠费用户标记</a></li>
         </ul>
       </li>
       <li>
@@ -52,8 +47,8 @@
       <li>
         <strong>工单管理</strong>
         <ul>
-          <li><a href="#">所有工单查看</a></li>
-          <li><a href="#">工单分配</a></li>
+          <li><a href="{% url 'repair:admin_order_list' %}">所有工单查看</a></li>
+          <li><a href="{% url 'repair:admin_order_list' %}">工单分配</a></li>
           <li><a href="#">工单优先级设置</a></li>
           <li><a href="#">工单转派</a></li>
           <li><a href="#">处理时效统计</a></li>
@@ -155,6 +150,12 @@
         <h4>已审批用户</h4>
         <p class="card-number">{{ approved_users }}</p>
         <p class="card-desc">可以正常登录系统的用户数量。</p>
+      </div>
+      <div class="card">
+        <h4>待处理工单</h4>
+        <p class="card-number">{{ pending_orders }}</p>
+        <p class="card-desc">待处理或已派单未开始的工单数量。</p>
+        <p><a href="{% url 'repair:admin_order_list' %}">工单管理</a></p>
       </div>
     </div>
 

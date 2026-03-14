@@ -1,0 +1,26 @@
+{% extends "repair/maintenance_profile_base.html" %}
+{% block title %}培训资料 - 个人中心{% endblock %}
+{% block profile_content %}
+<h3>培训资料</h3>
+<p>物业发布的培训资料，供维修人员学习。</p>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>标题</th>
+      <th>发布时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in materials %}
+    <tr>
+      <td>{{ m.title }}</td>
+      <td>{{ m.created_at|date:"Y-m-d H:i" }}</td>
+      <td><a href="{% url 'repair:maintenance_training_detail' m.pk %}">查看</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">暂无培训资料。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

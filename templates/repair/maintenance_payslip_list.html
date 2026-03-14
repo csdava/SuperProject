@@ -1,0 +1,35 @@
+{% extends "repair/maintenance_profile_base.html" %}
+{% block title %}工资单 - 个人中心{% endblock %}
+{% block profile_content %}
+<h3>工资单</h3>
+<p>历史工资单（最近 24 条）。</p>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>工资周期</th>
+      <th>基本工资</th>
+      <th>奖金/补贴</th>
+      <th>扣款</th>
+      <th>实发</th>
+      <th>生成时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in payslips %}
+    <tr>
+      <td>{{ p.period }}</td>
+      <td>{{ p.base_salary }}</td>
+      <td>{{ p.bonus }}</td>
+      <td>{{ p.deduction }}</td>
+      <td><strong>{{ p.total }}</strong></td>
+      <td>{{ p.created_at|date:"Y-m-d" }}</td>
+    </tr>
+    {% if p.remark %}
+    <tr><td colspan="6" style="color:#666;">备注：{{ p.remark }}</td></tr>
+    {% endif %}
+    {% empty %}
+    <tr><td colspan="6">暂无工资单。工资单由管理员在后台生成。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "community_core/household_profile_base.html" %}
+{% block title %}个人中心 - 房屋信息{% endblock %}
+{% block profile_content %}
+<h3>房屋信息</h3>
+{% if not room %}
+<p class="notice">您尚未绑定房屋。如需在系统中查看房屋信息，请联系物业在后台为您的账号绑定房间。</p>
+{% else %}
+<table class="simple-table">
+  <tbody>
+    <tr><th>楼栋</th><td>{{ room.unit.building.name }}</td></tr>
+    <tr><th>单元</th><td>{{ room.unit.name }}</td></tr>
+    <tr><th>房号</th><td>{{ room.room_no }}</td></tr>
+    <tr><th>楼层</th><td>{{ room.floor_no|default:"-" }}</td></tr>
+    <tr><th>建筑面积</th><td>{% if room.area %}{{ room.area }} ㎡{% else %}-{% endif %}</td></tr>
+    <tr><th>房间状态</th><td>{{ room.get_status_display }}</td></tr>
+    <tr><th>产权人姓名</th><td>{{ room.owner_name|default:"-" }}</td></tr>
+    <tr><th>产权人电话</th><td>{{ room.owner_phone|default:"-" }}</td></tr>
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

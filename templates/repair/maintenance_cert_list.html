@@ -1,0 +1,30 @@
+{% extends "repair/maintenance_profile_base.html" %}
+{% block title %}技能认证 - 个人中心{% endblock %}
+{% block profile_content %}
+<h3>技能认证</h3>
+<p>我的技能/资质证书，由管理员在后台登记。</p>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>证书名称</th>
+      <th>证书编号</th>
+      <th>发证日期</th>
+      <th>有效期至</th>
+      <th>发证机构</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in certs %}
+    <tr>
+      <td>{{ c.cert_name }}</td>
+      <td>{{ c.cert_no|default:"-" }}</td>
+      <td>{% if c.issued_at %}{{ c.issued_at|date:"Y-m-d" }}{% else %}-{% endif %}</td>
+      <td>{% if c.expiry_at %}{{ c.expiry_at|date:"Y-m-d" }}{% else %}-{% endif %}</td>
+      <td>{{ c.issuer|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无技能认证记录。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

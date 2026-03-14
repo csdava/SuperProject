@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}工单详情 - {{ order.title }} - 管理员{% endblock %}
+{% block content %}
+<h2>工单详情（管理）</h2>
+<p>
+  <a href="{% url 'repair:admin_order_list' %}">返回工单列表</a>
+  |
+  <a href="{% url 'accounts:dashboard_admin' %}">工作台</a>
+</p>
+
+<table class="simple-table">
+  <tbody>
+    <tr><th>标题</th><td>{{ order.title }}</td></tr>
+    <tr><th>类型</th><td>{{ order.get_category_display }}</td></tr>
+    <tr><th>状态</th><td>{{ order.get_status_display }}</td></tr>
+    <tr><th>问题描述</th><td>{{ order.description }}</td></tr>
+    <tr><th>联系电话</th><td>{{ order.contact_phone|default:"-" }}</td></tr>
+    <tr><th>报修人</th><td>{{ order.reporter.username }}</td></tr>
+    {% if order.room %}
+    <tr><th>报修房间</th><td>{{ order.room }}</td></tr>
+    {% endif %}
+    <tr><th>提交时间</th><td>{{ order.created_at|date:"Y-m-d H:i" }}</td></tr>
+    <tr><th>指派人</th><td>{% if order.assigned_to %}{{ order.assigned_to.username }}{% else %}未指派{% endif %}</td></tr>
+    {% if order.admin_remark %}
+    <tr><th>管理备注</th><td>{{ order.admin_remark }}</td></tr>
+    {% endif %}
+    {% if order.worker_remark %}
+    <tr><th>维修备注</th><td>{{ order.worker_remark }}</td></tr>
+    {% endif %}
+    {% if order.completed_at %}
+    <tr><th>完成时间</th><td>{{ order.completed_at|date:"Y-m-d H:i" }}</td></tr>
+    {% endif %}
+    {% if order.cost_amount is not None %}
+    <tr><th>费用金额</th><td>{{ order.cost_amount }} 元</td></tr>
+    {% if order.cost_note %}<tr><th>费用说明</th><td>{{ order.cost_note }}</td></tr>{% endif %}
+    {% endif %}
+  </tbody>
+</table>
+
+{% if order.status != "cancelled" %}
+<h3>指派 / 备注</h3>
+<form method="post" action="">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="assign">
+  {{ assign_form.as_p }}
+  <button type="submit">保存指派与备注</button>
+</form>
+
+<h3>取消工单</h3>
+<form method="post" action="" onsubmit="return confirm('确认取消该工单？');" style="display:inline;">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="cancel">
+  <button type="submit">取消工单</button>
+</form>
+{% endif %}
+
+<h3>维修进度记录</h3>
+{% if progress_logs %}
+<table class="simple-table">
+  <thead><tr><th>时间</th><th>内容</th><th>上报人</th></tr></thead>
+  <tbody>
+    {% for log in progress_logs %}
+    <tr>
+      <td>{{ log.created_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ log.content }}</td>
+      <td>{{ log.created_by.username|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无进度记录。</p>
+{% endif %}
+
+<h3>配件使用</h3>
+{% if part_usages %}
+<table class="simple-table">
+  <thead><tr><th>配件名称</th><th>数量</th><th>单位</th><th>备注</th><th>登记时间</th></tr></thead>
+  <tbody>
+    {% for p in part_usages %}
+    <tr>
+      <td>{{ p.part_name }}</td>
+      <td>{{ p.quantity }}</td>
+      <td>{{ p.unit }}</td>
+      <td>{{ p.remark|default:"-" }}</td>
+      <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无配件使用记录。</p>
+{% endif %}
+
+{% if evaluation %}
+<h3>户主评价</h3>
+<p>评分：{{ evaluation.rating }} 星；评价时间：{{ evaluation.created_at|date:"Y-m-d H:i" }}</p>
+<p>{{ evaluation.comment|default:"（无文字评价）" }}</p>
+{% endif %}
+{% endblock %}

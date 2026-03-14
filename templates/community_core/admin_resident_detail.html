@@ -3,7 +3,13 @@
 {% block content %}
 <h2>住户详情</h2>
 
-<p><a href="{% url 'community_core:admin_resident_list' %}">&laquo; 返回住户列表</a></p>
+<p>
+  <a href="{% url 'community_core:admin_resident_list' %}">&laquo; 返回住户列表</a>
+  |
+  <a href="{% url 'community_core:admin_resident_edit' resident.pk %}">编辑住户</a>
+  |
+  <a href="{% url 'community_core:admin_room_detail' room.pk %}">房间详情 / 产权变更</a>
+</p>
 
 <section>
   <h3>基础信息</h3>

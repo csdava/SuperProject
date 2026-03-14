@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}超时工单提醒{% endblock %}
+{% block content %}
+<h2>工单超时提醒</h2>
+<p>以下工单已超过 <strong>{{ overdue_hours }}</strong> 小时仍未完成，请优先处理。</p>
+<p>
+  <a href="{% url 'repair:maintenance_available_orders' %}">可接单工单</a>
+  |
+  <a href="{% url 'repair:maintenance_order_list' %}">我的工单</a>
+</p>
+
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>标题</th>
+      <th>类型</th>
+      <th>状态</th>
+      <th>当前处理人</th>
+      <th>提交时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.title }}</td>
+      <td>{{ o.get_category_display }}</td>
+      <td>{{ o.get_status_display }}</td>
+      <td>{% if o.assigned_to %}{{ o.assigned_to.username }}{% else %}未派单{% endif %}</td>
+      <td>{{ o.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        {% if not o.assigned_to %}
+        <a href="{% url 'repair:maintenance_order_detail' o.pk %}">接单 / 详情</a>
+        {% elif o.assigned_to == user %}
+        <a href="{% url 'repair:maintenance_order_detail' o.pk %}">处理</a>
+        {% else %}
+        <a href="{% url 'repair:maintenance_order_detail' o.pk %}">查看</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">暂无超时工单。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

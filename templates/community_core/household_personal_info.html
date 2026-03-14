@@ -1,0 +1,18 @@
+{% extends "community_core/household_profile_base.html" %}
+{% block title %}个人中心 - 个人信息{% endblock %}
+{% block profile_content %}
+<h3>个人信息</h3>
+<p>登录账号（用户名）不可修改，仅可修改以下资料。</p>
+<form method="post" action="">
+  {% csrf_token %}
+  <p><label>用户名</label> <span>{{ user.username }}</span> <small>（不可修改）</small></p>
+  {% for field in form %}
+  <p>
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% if field.errors %}<span class="error">{{ field.errors.0 }}</span>{% endif %}
+  </p>
+  {% endfor %}
+  <button type="submit">保存</button>
+</form>
+{% endblock %}
