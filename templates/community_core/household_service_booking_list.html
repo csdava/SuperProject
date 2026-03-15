@@ -1,12 +1,8 @@
-{% extends "base.html" %}
-{% block title %}家政预约{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}家政预约 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>家政预约</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
-  |
-  <a href="{% url 'community_core:household_service_booking_create' %}">提交预约</a>
-</p>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_service_booking_create' %}">+ 提交预约</a></p>
 <table class="simple-table">
   <thead>
     <tr><th>服务类型</th><th>期望日期</th><th>期望时段</th><th>状态</th><th>提交时间</th></tr>
@@ -25,4 +21,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock household_content %}

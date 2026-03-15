@@ -1,13 +1,12 @@
-{% extends "base.html" %}
-{% block title %}账单详情 - {{ bill }}{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}账单详情 - {{ bill }} - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>账单详情</h2>
-<p>
-  <a href="{% url 'property_fees:household_bill_list' %}">返回账单列表</a>
+<p class="admin-toolbar">
+  <a href="{% url 'property_fees:household_bill_list' %}">← 账单列表</a>
   |
   <a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a>
 </p>
-
 <table class="simple-table">
   <tbody>
     <tr><th>房间</th><td>{{ bill.room }}</td></tr>
@@ -43,5 +42,5 @@
 {% else %}
 <p>暂无缴费记录。线下缴费后由物业录入，您可在此查看。</p>
 {% endif %}
-<p class="text-muted" style="font-size:0.9em;">在线缴费、发票申请功能敬请期待。</p>
-{% endblock %}
+<p style="color:#7f8c8d; font-size:0.9em;">在线缴费、发票申请功能敬请期待。</p>
+{% endblock household_content %}

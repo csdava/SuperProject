@@ -1,12 +1,8 @@
-{% extends "base.html" %}
-{% block title %}缴费记录查询 - 管理员{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}缴费记录 - 财务管理{% endblock %}
+{% block admin_content %}
 <h2>缴费记录查询</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
-  |
-  <a href="{% url 'property_fees:admin_payment_add' %}">录入缴费</a>
-</p>
+<p class="admin-toolbar"><a href="{% url 'property_fees:admin_payment_add' %}">+ 录入缴费</a></p>
 <form method="get">
   <p><label>账期</label><input type="text" name="period" value="{{ period_filter }}" placeholder="如 2024-01"> <button type="submit">筛选</button></p>
 </form>
@@ -30,4 +26,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock admin_content %}

@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}{% if config %}编辑参数{% else %}新增参数{% endif %} - 基础参数配置{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>{% if config %}编辑参数：{{ config.key }}{% else %}新增参数{% endif %}</h2>
-<p><a href="{% url 'accounts:admin_system_config_list' %}">返回参数列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'accounts:admin_system_config_list' %}">← 返回参数列表</a></p>
 
 <form method="post">
   {% csrf_token %}

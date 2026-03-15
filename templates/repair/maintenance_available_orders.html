@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "accounts/base_maintenance.html" %}
 {% block title %}可接单工单 - 手动接单{% endblock %}
-{% block content %}
+{% block maintenance_content %}
 <h2>可接单工单（手动接单）</h2>
 <p>
   <a href="{% url 'repair:maintenance_order_list' %}">我的工单</a>
@@ -49,4 +49,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock maintenance_content %}

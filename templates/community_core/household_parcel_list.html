@@ -1,12 +1,8 @@
-{% extends "base.html" %}
-{% block title %}快递代收{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}快递代收 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>快递代收</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
-  |
-  <a href="{% url 'community_core:household_parcel_create' %}">登记快递</a>
-</p>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_parcel_create' %}">+ 登记快递</a></p>
 <table class="simple-table">
   <thead>
     <tr><th>快递公司</th><th>取件码</th><th>备注</th><th>状态</th><th>登记时间</th><th>操作</th></tr>
@@ -35,4 +31,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock household_content %}

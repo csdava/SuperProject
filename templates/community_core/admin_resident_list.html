@@ -1,8 +1,8 @@
-{% extends "base.html" %}
-{% block title %}住户列表 - 管理员{% endblock %}
-{% block content %}
-<h2>住户列表</h2>
-<p>用于管理员在 Web 工作台中查看、搜索和进入住户详情。</p>
+{% extends "accounts/base_admin.html" %}
+{% block title %}住户列表 - 住户管理{% endblock %}
+{% block admin_content %}
+<h2>住户信息管理</h2>
+<p style="color:#7f8c8d; margin-bottom:1rem;">查看、搜索住户并进入详情。</p>
 
 <form method="get" class="filter-form">
   <p>
@@ -78,6 +78,5 @@
     {% endfor %}
   </tbody>
 </table>
-
-{% endblock %}
+{% endblock admin_content %}
 

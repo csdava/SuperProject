@@ -1,10 +1,8 @@
-{% extends "base.html" %}
+{% extends "accounts/base_maintenance.html" %}
 {% block title %}我的工单 - 维修人员{% endblock %}
-{% block content %}
+{% block maintenance_content %}
 <h2>我的工单</h2>
 <p>
-  <a href="{% url 'accounts:dashboard_maintenance' %}">返回工作台</a>
-  |
   <a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a>
 </p>
 
@@ -50,4 +48,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock maintenance_content %}

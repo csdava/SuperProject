@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "accounts/base_maintenance.html" %}
 {% block title %}超时工单提醒{% endblock %}
-{% block content %}
+{% block maintenance_content %}
 <h2>工单超时提醒</h2>
 <p>以下工单已超过 <strong>{{ overdue_hours }}</strong> 小时仍未完成，请优先处理。</p>
 <p>
@@ -43,4 +43,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock maintenance_content %}

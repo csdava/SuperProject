@@ -1,8 +1,7 @@
-{% extends "base.html" %}
-{% block title %}违规记录{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}违规记录 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>违规记录</h2>
-<p><a href="{% url 'accounts:dashboard_household' %}">返回工作台</a></p>
 <table class="simple-table">
   <thead>
     <tr><th>车牌号</th><th>违规类型</th><th>说明</th><th>发生时间</th><th>状态</th><th>录入时间</th></tr>
@@ -22,4 +21,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock household_content %}

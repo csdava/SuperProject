@@ -1,9 +1,9 @@
-{% extends "base.html" %}
-{% block title %}房间 {{ room }} - 管理员{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}房间 {{ room }} - 住户管理{% endblock %}
+{% block admin_content %}
 <h2>房间详情：{{ room }}</h2>
-<p>
-  <a href="{% url 'community_core:admin_room_list' %}">返回房间列表</a>
+<p class="admin-toolbar">
+  <a href="{% url 'community_core:admin_room_list' %}">← 房间列表</a>
   |
   <a href="{% url 'community_core:admin_room_edit' room.pk %}">编辑房间</a>
 </p>
@@ -96,4 +96,4 @@
   <p><label>变更原因</label>{{ ownership_form.reason }}{{ ownership_form.reason.errors }}</p>
   <button type="submit">登记</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

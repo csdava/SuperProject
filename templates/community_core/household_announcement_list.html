@@ -1,8 +1,7 @@
-{% extends "base.html" %}
-{% block title %}社区公告{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}社区公告 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>社区公告</h2>
-<p><a href="{% url 'accounts:dashboard_household' %}">返回工作台</a></p>
 <ul>
   {% for a in announcements %}
   <li>
@@ -14,4 +13,4 @@
   <li>暂无公告。</li>
   {% endfor %}
 </ul>
-{% endblock %}
+{% endblock household_content %}

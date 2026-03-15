@@ -1,193 +1,65 @@
-{% extends "base.html" %}
-{% block title %}管理员工作台{% endblock %}
-{% block content %}
-<h2>管理员工作台</h2>
-<p>欢迎，{{ user.username }}。您已以「管理员」身份登录。</p>
+{% extends "accounts/base_admin.html" %}
+{% block title %}今日概览 - 管理后台{% endblock %}
 
-<div class="dashboard-layout">
-  <aside class="dashboard-menu">
-    <h3>功能菜单</h3>
-    <ul>
-      <li>
-        <strong>工作台</strong>
-        <ul>
-          <li><a href="#">今日待办</a></li>
-          <li><a href="#">数据看板</a></li>
-          <li><a href="#">快捷操作</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>住户管理</strong>
-        <ul>
-          <li><a href="{% url 'community_core:admin_resident_list' %}">住户信息管理（列表/搜索/详情）</a></li>
-          <li><a href="{% url 'community_core:admin_room_list' %}">房间信息维护 / 家庭成员管理</a></li>
-          <li><a href="{% url 'community_core:admin_building_list' %}">楼栋单元管理</a></li>
-          <li><a href="{% url 'community_core:admin_ownership_list' %}">产权变更记录</a></li>
-          <li><a href="{% url 'community_core:admin_tag_list' %}">住户标签管理（VIP/特殊需求/欠费标记）</a></li>
-          <li><a href="#">住户信息批量导入</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>财务管理</strong>
-        <ul>
-          <li><a href="{% url 'property_fees:admin_fee_type_list' %}">费用标准设置</a></li>
-          <li><a href="{% url 'property_fees:admin_bill_list' %}">账单管理</a></li>
-          <li><a href="{% url 'property_fees:admin_bill_create' %}">账单生成</a></li>
-          <li><a href="{% url 'property_fees:admin_bill_bulk' %}">批量生成账单</a></li>
-          <li><a href="{% url 'property_fees:admin_payment_list' %}">缴费记录查询</a></li>
-          <li><a href="{% url 'property_fees:admin_payment_add' %}">录入缴费</a></li>
-          <li><a href="{% url 'property_fees:admin_fee_stats' %}">收费率统计</a></li>
-          <li><a href="#">费用周期设置</a></li>
-          <li><a href="#">优惠减免审批</a></li>
-          <li><a href="#">欠费催缴</a></li>
-          <li><a href="#">发票管理</a></li>
-          <li><a href="#">费用趋势分析</a></li>
-          <li><a href="#">财务报表</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>工单管理</strong>
-        <ul>
-          <li><a href="{% url 'repair:admin_order_list' %}">所有工单查看</a></li>
-          <li><a href="{% url 'repair:admin_order_list' %}">工单分配</a></li>
-          <li><a href="#">工单优先级设置</a></li>
-          <li><a href="#">工单转派</a></li>
-          <li><a href="#">处理时效统计</a></li>
-          <li><a href="#">工单分类统计</a></li>
-          <li><a href="#">维修人员绩效</a></li>
-          <li><a href="#">评价查看</a></li>
-          <li><a href="#">投诉处理</a></li>
-          <li><a href="#">满意度统计</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>安防管理</strong>
-        <ul>
-          <li><a href="#">门禁权限设置</a></li>
-          <li><a href="#">门禁记录查询</a></li>
-          <li><a href="#">远程开门</a></li>
-          <li><a href="#">访客审核</a></li>
-          <li><a href="#">访客记录</a></li>
-          <li><a href="#">黑名单管理</a></li>
-          <li><a href="#">车辆信息管理</a></li>
-          <li><a href="#">车位分配</a></li>
-          <li><a href="#">违停处理</a></li>
-          <li><a href="#">道闸设置</a></li>
-          <li><a href="#">摄像头管理</a></li>
-          <li><a href="#">监控回放</a></li>
-          <li><a href="#">异常报警</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>设备管理</strong>
-        <ul>
-          <li><a href="#">设备信息维护</a></li>
-          <li><a href="#">设备二维码生成</a></li>
-          <li><a href="#">设备位置标注</a></li>
-          <li><a href="#">保养计划制定</a></li>
-          <li><a href="#">维护记录</a></li>
-          <li><a href="#">设备巡检</a></li>
-          <li><a href="#">能耗数据采集</a></li>
-          <li><a href="#">能耗分析</a></li>
-          <li><a href="#">节能建议</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>社区服务</strong>
-        <ul>
-          <li><a href="{% url 'community_core:admin_announcement_list' %}">公告管理（发布/编辑/置顶）</a></li>
-          <li><a href="{% url 'community_core:admin_activity_list' %}">社区活动（发布/报名管理/活动总结）</a></li>
-          <li><a href="#">公告推送</a></li>
-          <li><a href="#">邻里圈内容审核</a></li>
-          <li><a href="#">邻里圈违规处理</a></li>
-          <li><a href="#">话题管理</a></li>
-          <li><a href="#">服务商管理</a></li>
-          <li><a href="#">服务订单</a></li>
-          <li><a href="#">服务评价</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>系统管理</strong>
-        <ul>
-          <li><a href="#">部门管理</a></li>
-          <li><a href="#">岗位设置</a></li>
-          <li><a href="{% url 'accounts:admin_user_list' %}">用户账号管理</a></li>
-          <li><a href="#">角色权限配置</a></li>
-          <li><a href="#">权限分配</a></li>
-          <li><a href="{% url 'accounts:admin_system_config_list' %}">基础参数配置</a></li>
-          <li><a href="#">工作流设置</a></li>
-          <li><a href="#">短信模板</a></li>
-          <li><a href="#">支付配置</a></li>
-          <li><a href="{% url 'accounts:admin_audit_log_list' %}">操作日志</a></li>
-          <li><a href="{% url 'accounts:admin_login_log_list' %}">登录日志</a></li>
-          <li><a href="#">系统日志</a></li>
-          <li><a href="#">数据备份</a></li>
-          <li><a href="#">数据恢复</a></li>
-          <li><a href="#">数据清理</a></li>
-        </ul>
-      </li>
-    </ul>
-  </aside>
+{% block admin_content %}
+<h2>今日工作概览</h2>
+<p style="color:#7f8c8d; margin-bottom:1rem;">欢迎，{{ user.username }}。以下是待办与数据概览。</p>
 
-  <section class="dashboard-content">
-    <h3>今日工作概览（工作台）</h3>
-    <div class="cards-row">
-      <div class="card">
-        <h4>待审批用户</h4>
-        <p class="card-number">{{ pending_approvals }}</p>
-        <p class="card-desc">注册后尚未通过审批的户主/维修人员数量。</p>
-        <p><a href="{% url 'accounts:admin_user_list' %}?is_approved=0">前往审批</a></p>
-      </div>
-      <div class="card">
-        <h4>系统用户总数</h4>
-        <p class="card-number">{{ total_users }}</p>
-        <p class="card-desc">当前系统中已创建的账号数量。</p>
-        <p><a href="/admin/auth/user/">查看用户列表</a></p>
-      </div>
-      <div class="card">
-        <h4>已审批用户</h4>
-        <p class="card-number">{{ approved_users }}</p>
-        <p class="card-desc">可以正常登录系统的用户数量。</p>
-      </div>
-      <div class="card">
-        <h4>待处理工单</h4>
-        <p class="card-number">{{ pending_orders }}</p>
-        <p class="card-desc">待处理或已派单未开始的工单数量。</p>
-        <p><a href="{% url 'repair:admin_order_list' %}">工单管理</a></p>
-      </div>
-    </div>
-
-    <h3>用户结构数据看板</h3>
-    <table class="simple-table">
-      <thead>
-        <tr>
-          <th>身份类型</th>
-          <th>人数</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in role_stats %}
-        <tr>
-          <td>
-            {% if item.role == 'admin' %}管理员
-            {% elif item.role == 'maintenance' %}维修人员
-            {% elif item.role == 'household' %}户主
-            {% else %}其他{% endif %}
-          </td>
-          <td>{{ item.count }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="2">暂无用户数据。</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    <h3>快捷操作</h3>
-    <ul>
-      <li><a href="/admin/accounts/userprofile/">审批新注册用户</a></li>
-      <li><a href="/admin/auth/user/add/">创建管理员/物业人员账号</a></li>
-      <li><a href="/admin/">进入 Django 管理后台</a>（高级配置、数据管理）。</li>
-    </ul>
-  </section>
+<div class="cards-row">
+  <div class="card">
+    <h4>待审批用户</h4>
+    <p class="card-number">{{ pending_approvals }}</p>
+    <p class="card-desc">注册后尚未通过审批的户主/维修人员。</p>
+    <p><a href="{% url 'accounts:admin_user_list' %}?is_approved=0">前往审批</a></p>
+  </div>
+  <div class="card">
+    <h4>系统用户总数</h4>
+    <p class="card-number">{{ total_users }}</p>
+    <p class="card-desc">当前已创建的账号数量。</p>
+    <p><a href="{% url 'accounts:admin_user_list' %}">用户列表</a></p>
+  </div>
+  <div class="card">
+    <h4>已审批用户</h4>
+    <p class="card-number">{{ approved_users }}</p>
+    <p class="card-desc">可正常登录的用户数。</p>
+  </div>
+  <div class="card">
+    <h4>待处理工单</h4>
+    <p class="card-number">{{ pending_orders }}</p>
+    <p class="card-desc">待处理或已派单未开始的工单。</p>
+    <p><a href="{% url 'repair:admin_order_list' %}">工单管理</a></p>
+  </div>
 </div>
+
+<h3>用户结构</h3>
+<table class="simple-table">
+  <thead>
+    <tr>
+      <th>身份类型</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in role_stats %}
+    <tr>
+      <td>
+        {% if item.role == 'admin' %}管理员
+        {% elif item.role == 'maintenance' %}维修人员
+        {% elif item.role == 'household' %}户主
+        {% else %}其他{% endif %}
+      </td>
+      <td>{{ item.count }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="2">暂无用户数据。</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>快捷操作</h3>
+<ul>
+  <li><a href="{% url 'accounts:admin_user_list' %}?is_approved=0">审批新注册用户</a></li>
+  <li><a href="{% url 'accounts:admin_user_list' %}">用户账号管理</a></li>
+  <li><a href="/admin/">Django 管理后台</a>（高级配置与数据）</li>
+</ul>
 {% endblock %}

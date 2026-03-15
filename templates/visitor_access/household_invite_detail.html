@@ -1,11 +1,8 @@
-{% extends "base.html" %}
-{% block title %}邀请详情 - {{ invite.visitor_name }}{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}邀请详情 - {{ invite.visitor_name }} - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>访客邀请详情</h2>
-<p>
-  <a href="{% url 'visitor_access:household_invite_list' %}">返回访客记录</a>
-</p>
-
+<p class="admin-toolbar"><a href="{% url 'visitor_access:household_invite_list' %}">← 访客记录</a></p>
 <table class="simple-table">
   <tbody>
     <tr><th>访客姓名</th><td>{{ invite.visitor_name }}</td></tr>
@@ -26,4 +23,4 @@
 <p>邀请码：<code>{{ invite.token }}</code></p>
 <p><a href="{% url 'visitor_access:household_invite_cancel' invite.pk %}">取消该邀请</a></p>
 {% endif %}
-{% endblock %}
+{% endblock household_content %}

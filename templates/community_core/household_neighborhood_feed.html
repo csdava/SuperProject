@@ -1,17 +1,12 @@
-{% extends "base.html" %}
-{% block title %}邻里圈{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}邻里圈 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>邻里圈</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
-  |
+<p class="admin-toolbar">
   <a href="{% url 'community_core:household_neighborhood_create' %}">发布动态</a>
   |
   <a href="{% url 'community_core:household_neighborhood_my_posts' %}">我的发布</a>
-</p>
-
-<p>
-  筛选：
+  &nbsp;|&nbsp; 筛选：
   <a href="{% url 'community_core:household_neighborhood_feed' %}">全部</a>
   <a href="{% url 'community_core:household_neighborhood_feed' %}?type=dynamic">动态</a>
   <a href="{% url 'community_core:household_neighborhood_feed' %}?type=second_hand">二手市场</a>
@@ -34,4 +29,4 @@
   <li>暂无内容，快来<a href="{% url 'community_core:household_neighborhood_create' %}">发一条</a>吧。</li>
   {% endfor %}
 </ul>
-{% endblock %}
+{% endblock household_content %}

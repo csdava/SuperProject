@@ -1,11 +1,11 @@
-{% extends "base.html" %}
-{% block title %}{% if is_edit %}编辑费用类型{% else %}新增费用类型{% endif %}{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}{% if is_edit %}编辑费用类型{% else %}新增费用类型{% endif %} - 财务管理{% endblock %}
+{% block admin_content %}
 <h2>{% if is_edit %}编辑费用类型{% else %}新增费用类型{% endif %}</h2>
-<p><a href="{% url 'property_fees:admin_fee_type_list' %}">返回费用类型列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'property_fees:admin_fee_type_list' %}">← 费用类型列表</a></p>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">保存</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

@@ -1,12 +1,8 @@
-{% extends "base.html" %}
-{% block title %}车位状态{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}车位状态 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>车位状态</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
-</p>
-<p>
-  筛选：
+<p class="admin-toolbar">筛选：
   <a href="{% url 'vehicle_mgmt:household_parking_list' %}">全部</a>
   <a href="{% url 'vehicle_mgmt:household_parking_list' %}?type=fixed">固定车位</a>
   <a href="{% url 'vehicle_mgmt:household_parking_list' %}?type=temp">临停车位</a>
@@ -29,4 +25,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock household_content %}

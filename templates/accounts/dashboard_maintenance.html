@@ -1,84 +1,16 @@
-{% extends "base.html" %}
-{% block title %}维修人员工作台{% endblock %}
-{% block content %}
-<h2>维修人员工作台</h2>
-<p>欢迎，{{ user.username }}。您已以「维修人员」身份登录。</p>
+{% extends "accounts/base_maintenance.html" %}
+{% block title %}维修工作台 - 邻里圈{% endblock %}
 
-<div class="dashboard-layout">
-  <aside class="dashboard-menu">
-    <h3>功能菜单</h3>
-    <ul>
-      <li>
-        <strong>我的工单</strong>
-        <ul>
-          <li><a href="{% url 'repair:maintenance_order_list' %}">工单列表</a></li>
-          <li><a href="{% url 'repair:maintenance_order_list' %}?status=pending">待处理工单</a></li>
-          <li><a href="{% url 'repair:maintenance_order_list' %}?status=in_progress">处理中工单</a></li>
-          <li><a href="{% url 'repair:maintenance_order_list' %}?status=completed">已完成工单</a></li>
-          <li><a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>接单处理</strong>
-        <ul>
-          <li><a href="{% url 'repair:maintenance_accept_settings' %}">自动接单设置</a></li>
-          <li><a href="{% url 'repair:maintenance_available_orders' %}">可接单工单（手动接单）</a></li>
-          <li><a href="{% url 'repair:maintenance_overdue_list' %}">工单超时提醒</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>维修管理</strong>
-        <ul>
-          <li><a href="{% url 'repair:maintenance_order_list' %}">我的工单</a>（进度上报/配件登记/完工/费用在工单详情内）</li>
-        </ul>
-      </li>
-      <li>
-        <strong>巡检任务</strong>
-        <ul>
-          <li><a href="{% url 'repair:maintenance_inspection_list' %}">巡检任务列表</a></li>
-          <li><a href="{% url 'repair:maintenance_inspection_list' %}?status=pending">待执行</a></li>
-          <li><a href="{% url 'repair:maintenance_inspection_list' %}?status=in_progress">进行中</a></li>
-          <li><a href="{% url 'repair:maintenance_inspection_list' %}?status=completed">巡检记录（已完成）</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>物料管理</strong>
-        <ul>
-          <li><a href="#">物料领用</a></li>
-          <li><a href="#">物料归还</a></li>
-          <li><a href="#">库存查询</a></li>
-          <li><a href="#">报废申请</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>工作统计</strong>
-        <ul>
-          <li><a href="#">工时统计</a></li>
-          <li><a href="#">工单完成率</a></li>
-          <li><a href="#">用户评价</a></li>
-          <li><a href="#">绩效排名</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>个人中心</strong>
-        <ul>
-          <li><a href="{% url 'repair:maintenance_profile_index' %}">个人中心首页</a></li>
-          <li><a href="{% url 'repair:maintenance_schedule_list' %}">工作排班</a></li>
-          <li><a href="{% url 'repair:maintenance_payslip_list' %}">工资单</a></li>
-          <li><a href="{% url 'repair:maintenance_cert_list' %}">技能认证</a></li>
-          <li><a href="{% url 'repair:maintenance_training_list' %}">培训资料</a></li>
-        </ul>
-      </li>
-    </ul>
-  </aside>
+{% block maintenance_content %}
+<h2>欢迎，{{ user.username }}</h2>
+<p style="color:#7f8c8d; margin-bottom:1rem;">您已以「维修人员」身份登录，请从左侧菜单进入各功能。</p>
 
-  <section class="dashboard-content">
-    <h3>快捷入口</h3>
-    <p>当前维修人员端尚在搭建中，以上菜单为后续实现的业务功能结构。</p>
-    <ul>
-      <li>优先计划：我的工单、接单处理、维修管理、巡检任务。</li>
-      <li>后续迭代：物料管理、工作统计、个人中心细节功能。</li>
-    </ul>
-  </section>
-</div>
+<h3>快捷入口</h3>
+<ul>
+  <li><a href="{% url 'repair:maintenance_order_list' %}">我的工单</a></li>
+  <li><a href="{% url 'repair:maintenance_available_orders' %}">可接单工单</a></li>
+  <li><a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a></li>
+  <li><a href="{% url 'repair:maintenance_inspection_list' %}">巡检任务</a></li>
+  <li><a href="{% url 'repair:maintenance_profile_index' %}">个人中心</a></li>
+</ul>
 {% endblock %}

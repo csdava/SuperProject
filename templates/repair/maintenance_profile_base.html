@@ -1,5 +1,7 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "accounts/base_maintenance.html" %}
+{% block title %}个人中心 - 维修人员 - 邻里圈{% endblock %}
+
+{% block maintenance_content %}
 <h2>个人中心（维修人员）</h2>
 <nav class="profile-nav">
   <a href="{% url 'repair:maintenance_profile_index' %}">概览</a>

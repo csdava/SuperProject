@@ -1,12 +1,8 @@
-{% extends "base.html" %}
-{% block title %}临停申请{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}临停申请 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>临停申请</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
-  |
-  <a href="{% url 'vehicle_mgmt:household_temp_request_create' %}">提交临停申请</a>
-</p>
+<p class="admin-toolbar"><a href="{% url 'vehicle_mgmt:household_temp_request_create' %}">+ 提交临停申请</a></p>
 <table class="simple-table">
   <thead>
     <tr><th>车牌号</th><th>进入时间</th><th>离开时间</th><th>事由</th><th>状态</th><th>申请时间</th></tr>
@@ -26,4 +22,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock household_content %}

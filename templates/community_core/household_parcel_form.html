@@ -1,12 +1,12 @@
-{% extends "base.html" %}
-{% block title %}登记快递{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}登记快递 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>登记快递代收</h2>
-<p><a href="{% url 'community_core:household_parcel_list' %}">返回快递列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_parcel_list' %}">← 快递列表</a></p>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">登记</button>
 </form>
-<p class="text-muted" style="font-size:0.9em;">收到取件通知后在此登记，取件后可在列表中标记已取。</p>
-{% endblock %}
+<p style="color:#7f8c8d; font-size:0.9em; margin-top:0.5rem;">收到取件通知后在此登记，取件后可在列表中标记已取。</p>
+{% endblock household_content %}

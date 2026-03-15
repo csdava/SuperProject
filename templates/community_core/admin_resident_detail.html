@@ -1,10 +1,9 @@
-{% extends "base.html" %}
-{% block title %}住户详情 - 管理员{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}住户详情 - 住户管理{% endblock %}
+{% block admin_content %}
 <h2>住户详情</h2>
-
-<p>
-  <a href="{% url 'community_core:admin_resident_list' %}">&laquo; 返回住户列表</a>
+<p class="admin-toolbar">
+  <a href="{% url 'community_core:admin_resident_list' %}">← 住户列表</a>
   |
   <a href="{% url 'community_core:admin_resident_edit' resident.pk %}">编辑住户</a>
   |
@@ -119,6 +118,5 @@
     </tbody>
   </table>
 </section>
-
-{% endblock %}
+{% endblock admin_content %}
 

@@ -1,9 +1,9 @@
-{% extends "base.html" %}
-{% block title %}批量生成账单 - 管理员{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}批量生成账单 - 财务管理{% endblock %}
+{% block admin_content %}
 <h2>批量生成账单</h2>
-<p><a href="{% url 'property_fees:admin_bill_list' %}">返回账单列表</a></p>
-<p>为指定楼栋下所有房间生成同一账期、同一费用类型的账单（已存在相同房间+类型+账期的不会重复生成）。</p>
+<p class="admin-toolbar"><a href="{% url 'property_fees:admin_bill_list' %}">← 账单列表</a></p>
+<p style="color:#7f8c8d; margin-bottom:1rem;">为指定楼栋下所有房间生成同一账期、同一费用类型的账单（已存在相同房间+类型+账期的不会重复生成）。</p>
 <form method="post" action="">
   {% csrf_token %}
   <p>
@@ -34,4 +34,4 @@
   </p>
   <button type="submit">批量生成</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

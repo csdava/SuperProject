@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}管理后台 - 邻里圈{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <a href="{% url 'accounts:dashboard_admin' %}">管理后台</a>
+      <span class="admin-user">{{ user.username }}</span>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-group">
+        <div class="admin-nav-title">工作台</div>
+        <ul>
+          <li><a href="{% url 'accounts:dashboard_admin' %}">今日概览</a></li>
+        </ul>
+      </div>
+      <div class="admin-nav-group">
+        <div class="admin-nav-title">住户管理</div>
+        <ul>
+          <li><a href="{% url 'community_core:admin_resident_list' %}">住户信息管理</a></li>
+          <li><a href="{% url 'community_core:admin_room_list' %}">房间与家庭成员</a></li>
+          <li><a href="{% url 'community_core:admin_building_list' %}">楼栋单元</a></li>
+          <li><a href="{% url 'community_core:admin_ownership_list' %}">产权变更</a></li>
+          <li><a href="{% url 'community_core:admin_tag_list' %}">住户标签</a></li>
+        </ul>
+      </div>
+      <div class="admin-nav-group">
+        <div class="admin-nav-title">财务管理</div>
+        <ul>
+          <li><a href="{% url 'property_fees:admin_fee_type_list' %}">费用标准</a></li>
+          <li><a href="{% url 'property_fees:admin_bill_list' %}">账单管理</a></li>
+          <li><a href="{% url 'property_fees:admin_bill_create' %}">账单生成</a></li>
+          <li><a href="{% url 'property_fees:admin_bill_bulk' %}">批量生成账单</a></li>
+          <li><a href="{% url 'property_fees:admin_payment_list' %}">缴费记录</a></li>
+          <li><a href="{% url 'property_fees:admin_payment_add' %}">录入缴费</a></li>
+          <li><a href="{% url 'property_fees:admin_fee_stats' %}">收费率统计</a></li>
+        </ul>
+      </div>
+      <div class="admin-nav-group">
+        <div class="admin-nav-title">工单管理</div>
+        <ul>
+          <li><a href="{% url 'repair:admin_order_list' %}">工单列表</a></li>
+        </ul>
+      </div>
+      <div class="admin-nav-group">
+        <div class="admin-nav-title">社区服务</div>
+        <ul>
+          <li><a href="{% url 'community_core:admin_announcement_list' %}">公告管理</a></li>
+          <li><a href="{% url 'community_core:admin_activity_list' %}">社区活动</a></li>
+        </ul>
+      </div>
+      <div class="admin-nav-group">
+        <div class="admin-nav-title">系统管理</div>
+        <ul>
+          <li><a href="{% url 'accounts:admin_user_list' %}">用户账号管理</a></li>
+          <li><a href="{% url 'accounts:admin_system_config_list' %}">基础参数配置</a></li>
+          <li><a href="{% url 'accounts:admin_audit_log_list' %}">操作日志</a></li>
+          <li><a href="{% url 'accounts:admin_login_log_list' %}">登录日志</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <a href="/admin/">Django 后台</a>
+    </div>
+  </aside>
+  <section class="admin-content">
+    {% block admin_content %}{% endblock %}
+  </section>
+</div>
+<script>
+(function(){
+  var path = window.location.pathname;
+  document.querySelectorAll('.admin-nav a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (href && path.indexOf(href) === 0) a.classList.add('active');
+  });
+})();
+</script>
+{% endblock %}

@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}{% if is_edit %}编辑楼栋{% else %}新增楼栋{% endif %}{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>{% if is_edit %}编辑楼栋{% else %}新增楼栋{% endif %}</h2>
-<p><a href="{% url 'community_core:admin_building_list' %}">返回楼栋列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'community_core:admin_building_list' %}">← 楼栋列表</a></p>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">保存</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

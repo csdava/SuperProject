@@ -1,8 +1,8 @@
-{% extends "base.html" %}
-{% block title %}{{ activity.title }}{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}{{ activity.title }} - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>{{ activity.title }}</h2>
-<p><a href="{% url 'community_core:household_activity_list' %}">返回活动列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_activity_list' %}">← 活动列表</a></p>
 <table class="simple-table">
   <tbody>
     <tr><th>开始时间</th><td>{{ activity.start_time|date:"Y-m-d H:i" }}</td></tr>
@@ -27,4 +27,4 @@
     <button type="submit">我要报名</button>
   </form>
 {% endif %}
-{% endblock %}
+{% endblock household_content %}

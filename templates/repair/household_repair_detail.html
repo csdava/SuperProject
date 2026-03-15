@@ -1,11 +1,8 @@
-{% extends "base.html" %}
-{% block title %}工单详情 - {{ order.title }}{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}工单详情 - {{ order.title }} - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>工单详情</h2>
-<p>
-  <a href="{% url 'repair:household_repair_list' %}">返回工单列表</a>
-</p>
-
+<p class="admin-toolbar"><a href="{% url 'repair:household_repair_list' %}">← 工单列表</a></p>
 <table class="simple-table">
   <tbody>
     <tr><th>标题</th><td>{{ order.title }}</td></tr>
@@ -42,4 +39,4 @@
   <button type="submit">提交评价</button>
 </form>
 {% endif %}
-{% endblock %}
+{% endblock household_content %}

@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}{{ building.name }} - 楼栋详情{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>楼栋：{{ building.name }}</h2>
-<p>
-  <a href="{% url 'community_core:admin_building_list' %}">返回楼栋列表</a>
+<p class="admin-toolbar">
+  <a href="{% url 'community_core:admin_building_list' %}">← 楼栋列表</a>
   |
   <a href="{% url 'community_core:admin_building_edit' building.pk %}">编辑楼栋</a>
 </p>
@@ -38,4 +38,4 @@
   </p>
   <button type="submit">添加单元</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

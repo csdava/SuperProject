@@ -1,25 +1,18 @@
-{% extends "base.html" %}
-{% block title %}我的账单{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}我的账单 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>我的账单</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_household' %}">返回工作台</a>
-  |
+<p class="admin-toolbar">
   <a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a>
-</p>
-
-{% if total_due and total_due > 0 %}
-<p><strong>待缴总额：{{ total_due }} 元</strong> <a href="{% url 'property_fees:household_bill_list' %}?status=pending">查看待缴费</a></p>
-{% endif %}
-
-<p>
-  筛选：
+  &nbsp;|&nbsp; 筛选：
   <a href="{% url 'property_fees:household_bill_list' %}">全部</a>
   <a href="{% url 'property_fees:household_bill_list' %}?status=pending">待缴费</a>
   <a href="{% url 'property_fees:household_bill_list' %}?status=overdue">已逾期</a>
   <a href="{% url 'property_fees:household_bill_list' %}?status=paid">已缴清</a>
 </p>
-
+{% if total_due and total_due > 0 %}
+<p><strong>待缴总额：{{ total_due }} 元</strong> <a href="{% url 'property_fees:household_bill_list' %}?status=pending">查看待缴费</a></p>
+{% endif %}
 <table class="simple-table">
   <thead>
     <tr>
@@ -52,5 +45,5 @@
     {% endfor %}
   </tbody>
 </table>
-<p class="text-muted" style="font-size:0.9em;">在线缴费、发票申请功能敬请期待；当前可在账单详情中查看缴费记录，线下缴费后由物业录入。</p>
-{% endblock %}
+<p style="color:#7f8c8d; font-size:0.9em;">在线缴费、发票申请功能敬请期待；当前可在账单详情中查看缴费记录，线下缴费后由物业录入。</p>
+{% endblock household_content %}

@@ -1,6 +1,6 @@
-{% extends "base.html" %}
-{% block title %}删除帖子{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}删除帖子 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>确认删除</h2>
 <p>确定要删除这条{% if post.title %}「{{ post.title }}」{% else %}动态{% endif %}吗？</p>
 <form method="post" action="">
@@ -8,4 +8,4 @@
   <button type="submit">确认删除</button>
   <a href="{% url 'community_core:household_neighborhood_my_posts' %}">取消</a>
 </form>
-{% endblock %}
+{% endblock household_content %}

@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "accounts/base_maintenance.html" %}
 {% block title %}接单设置 - 自动接单{% endblock %}
-{% block content %}
+{% block maintenance_content %}
 <h2>接单设置</h2>
 <p>
   <a href="{% url 'repair:maintenance_available_orders' %}">可接单工单</a>
@@ -26,4 +26,4 @@
   </p>
   <button type="submit">保存</button>
 </form>
-{% endblock %}
+{% endblock maintenance_content %}

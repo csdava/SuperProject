@@ -1,33 +1,45 @@
 {% extends "base.html" %}
-{% block title %}注册{% endblock %}
+{% block title %}注册 - 邻里圈{% endblock %}
 {% block content %}
-<h2>注册</h2>
-<p>仅支持「户主」和「维修人员」注册。注册后需管理员审批通过才能登录。管理员账号由系统管理员在后台创建。</p>
-<form method="post" action="{% url 'accounts:register' %}">
-  {% csrf_token %}
-  {% if form.non_field_errors %}<ul class="errorlist">{{ form.non_field_errors }}</ul>{% endif %}
-  <p>
-    <label for="id_username">用户名</label>
-    {{ form.username }}
-    {% if form.username.errors %}<span class="error">{{ form.username.errors.0 }}</span>{% endif %}
-  </p>
-  <p>
-    <label>身份</label>
-    <span class="role-inline">{{ form.role }}</span>
-    {% if form.role.errors %}<span class="error">{{ form.role.errors.0 }}</span>{% endif %}
-  </p>
-  <p>
-    <label for="id_password1">密码</label>
-    {{ form.password1 }}
-    {% if form.password1.help_text %}<span class="helptext">{{ form.password1.help_text }}</span>{% endif %}
-    {% if form.password1.errors %}<span class="error">{{ form.password1.errors.0 }}</span>{% endif %}
-  </p>
-  <p>
-    <label for="id_password2">确认密码</label>
-    {{ form.password2 }}
-    {% if form.password2.errors %}<span class="error">{{ form.password2.errors.0 }}</span>{% endif %}
-  </p>
-  <button type="submit">提交注册</button>
-</form>
-<p>已有账号？<a href="{% url 'accounts:login_select_role' %}">去登录</a></p>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <h2>注册</h2>
+      <p>仅支持户主、维修人员注册，管理员账号由后台创建</p>
+    </div>
+    <div class="auth-card-body">
+      <form method="post" action="{% url 'accounts:register' %}" class="auth-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <ul class="errorlist">{{ form.non_field_errors }}</ul>
+        {% endif %}
+        <div class="form-group">
+          <label for="id_username">用户名</label>
+          <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" maxlength="150" required autofocus placeholder="请输入用户名" class="{% if form.username.errors %}input-error{% endif %}">
+          {% if form.username.errors %}<span class="error">{{ form.username.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>身份</label>
+          <div class="auth-role-inline">{{ form.role }}</div>
+          {% if form.role.errors %}<span class="error">{{ form.role.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-group">
+          <label for="id_password1">密码</label>
+          <input type="password" name="password1" id="id_password1" required placeholder="请输入密码" class="{% if form.password1.errors %}input-error{% endif %}">
+          {% if form.password1.help_text %}<span class="helptext">{{ form.password1.help_text }}</span>{% endif %}
+          {% if form.password1.errors %}<span class="error">{{ form.password1.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-group">
+          <label for="id_password2">确认密码</label>
+          <input type="password" name="password2" id="id_password2" required placeholder="请再次输入密码" class="{% if form.password2.errors %}input-error{% endif %}">
+          {% if form.password2.errors %}<span class="error">{{ form.password2.errors.0 }}</span>{% endif %}
+        </div>
+        <button type="submit" class="btn-primary">提交注册</button>
+      </form>
+    </div>
+    <div class="auth-card-footer">
+      已有账号？<a href="{% url 'accounts:login_select_role' %}">去登录</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

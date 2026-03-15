@@ -1,6 +1,6 @@
-{% extends "base.html" %}
-{% block title %}取消邀请{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}取消邀请 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>确认取消邀请</h2>
 <p>确定要取消对「{{ invite.visitor_name }}」的访客邀请吗？取消后该邀请码将失效。</p>
 <form method="post" action="">
@@ -8,4 +8,4 @@
   <button type="submit">确认取消</button>
   <a href="{% url 'visitor_access:household_invite_list' %}">返回</a>
 </form>
-{% endblock %}
+{% endblock household_content %}

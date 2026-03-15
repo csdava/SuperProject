@@ -1,10 +1,8 @@
-{% extends "base.html" %}
-{% block title %}收费率统计 - 管理员{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}收费率统计 - 财务管理{% endblock %}
+{% block admin_content %}
 <h2>收费率统计</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
-  |
+<p class="admin-toolbar">
   <a href="{% url 'property_fees:admin_bill_list' %}">账单管理</a>
   |
   <a href="{% url 'property_fees:admin_payment_list' %}">缴费记录</a>
@@ -42,4 +40,4 @@
 {% if bill_count > 0 %}
 <p>收费率（已缴清/总笔数）：{{ paid_count }} / {{ bill_count }} = {% widthratio paid_count bill_count 100 %}%</p>
 {% endif %}
-{% endblock %}
+{% endblock admin_content %}

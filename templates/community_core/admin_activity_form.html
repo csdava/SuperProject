@@ -1,9 +1,9 @@
-{% extends "base.html" %}
-{% block title %}{% if is_edit %}编辑活动{% else %}发布活动{% endif %}{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}{% if is_edit %}编辑活动{% else %}发布活动{% endif %} - 社区服务{% endblock %}
+{% block admin_content %}
 <h2>{% if is_edit %}编辑活动{% else %}发布活动{% endif %}</h2>
-<p>
-  <a href="{% url 'community_core:admin_activity_list' %}">返回活动列表</a>
+<p class="admin-toolbar">
+  <a href="{% url 'community_core:admin_activity_list' %}">← 活动列表</a>
   {% if is_edit and activity %}| <a href="{% url 'community_core:admin_activity_detail' activity.pk %}">活动详情</a>{% endif %}
 </p>
 <form method="post" action="">
@@ -11,4 +11,4 @@
   {{ form.as_p }}
   <button type="submit">保存</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

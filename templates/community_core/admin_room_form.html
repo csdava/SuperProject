@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}{% if is_edit %}编辑房间{% else %}新增房间{% endif %}{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>{% if is_edit %}编辑房间{% else %}新增房间{% endif %}</h2>
-<p>
-  <a href="{% url 'community_core:admin_room_list' %}">返回房间列表</a>
+<p class="admin-toolbar">
+  <a href="{% url 'community_core:admin_room_list' %}">← 房间列表</a>
   {% if is_edit and room %}| <a href="{% url 'community_core:admin_room_detail' room.pk %}">房间详情</a>{% endif %}
 </p>
 <form method="post" action="">
@@ -11,4 +11,4 @@
   {{ form.as_p }}
   <button type="submit">保存</button>
 </form>
-{% endblock %}
+{% endblock admin_content %}

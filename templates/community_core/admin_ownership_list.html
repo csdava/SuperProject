@@ -1,12 +1,8 @@
-{% extends "base.html" %}
-{% block title %}产权变更记录 - 管理员{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}产权变更记录 - 住户管理{% endblock %}
+{% block admin_content %}
 <h2>产权变更记录</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
-  |
-  <a href="{% url 'community_core:admin_ownership_add' %}">登记产权变更</a>
-</p>
+<p class="admin-toolbar"><a href="{% url 'community_core:admin_ownership_add' %}">+ 登记产权变更</a></p>
 
 <form method="get" class="filter-form">
   <p>
@@ -51,4 +47,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock admin_content %}

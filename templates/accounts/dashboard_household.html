@@ -1,98 +1,16 @@
-{% extends "base.html" %}
-{% block title %}户主工作台{% endblock %}
-{% block content %}
-<h2>户主工作台</h2>
-<p>欢迎，{{ user.username }}。您已以「户主」身份登录。</p>
+{% extends "accounts/base_household.html" %}
+{% block title %}户主工作台 - 邻里圈{% endblock %}
 
-<div class="dashboard-layout">
-  <aside class="dashboard-menu">
-    <h3>功能菜单</h3>
-    <ul>
-      <li>
-        <strong>社区公告</strong>
-        <ul>
-          <li><a href="{% url 'community_core:household_announcement_list' %}">查看最新公告</a></li>
-          <li><a href="{% url 'community_core:household_announcement_list' %}">历史公告查询</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>费用中心</strong>
-        <ul>
-          <li><a href="{% url 'property_fees:household_bill_list' %}">我的账单（仅本人）</a></li>
-          <li><a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a></li>
-          <li><a href="{% url 'property_fees:household_bill_list' %}?status=pending">欠费查询</a></li>
-          <li><a href="{% url 'property_fees:household_bill_list' %}">在线缴费</a></li>
-          <li><a href="{% url 'property_fees:household_bill_list' %}">发票申请</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>报事报修</strong>
-        <ul>
-          <li><a href="{% url 'repair:household_repair_create' %}">我要报修</a></li>
-          <li><a href="{% url 'repair:household_repair_list' %}">报修进度 / 历史工单</a></li>
-          <li><a href="{% url 'repair:household_repair_list' %}?status=completed">已完成（可评价）</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>访客管理</strong>
-        <ul>
-          <li><a href="{% url 'visitor_access:household_invite_list' %}">访客记录</a></li>
-          <li><a href="{% url 'visitor_access:household_invite_create' %}">邀请访客</a></li>
-          <li><a href="{% url 'visitor_access:household_invite_list' %}">取消邀请</a></li>
-          <li><a href="{% url 'visitor_access:household_invite_list' %}">访客二维码分享</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>车辆管理</strong>
-        <ul>
-          <li><a href="{% url 'vehicle_mgmt:household_vehicle_list' %}">我的车辆</a></li>
-          <li><a href="{% url 'vehicle_mgmt:household_parking_list' %}">车位状态</a></li>
-          <li><a href="{% url 'vehicle_mgmt:household_temp_request_list' %}">临停申请</a></li>
-          <li><a href="{% url 'vehicle_mgmt:household_violation_list' %}">违规记录</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>社区服务</strong>
-        <ul>
-          <li><a href="{% url 'community_core:household_service_booking_list' %}">家政预约</a></li>
-          <li><a href="{% url 'community_core:household_parcel_list' %}">快递代收</a></li>
-          <li><a href="{% url 'community_core:household_lost_report_list' %}">物品报失</a></li>
-          <li><a href="{% url 'community_core:household_feedback' %}">投诉建议</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>邻里圈</strong>
-        <ul>
-          <li><a href="{% url 'community_core:household_neighborhood_feed' %}">邻里圈动态</a></li>
-          <li><a href="{% url 'community_core:household_neighborhood_create' %}">发布动态</a></li>
-          <li><a href="{% url 'community_core:household_activity_list' %}">社区活动</a></li>
-          <li><a href="{% url 'community_core:household_neighborhood_feed' %}?type=second_hand">二手市场</a></li>
-          <li><a href="{% url 'community_core:household_neighborhood_feed' %}?type=help">邻里互助</a></li>
-          <li><a href="{% url 'community_core:household_neighborhood_my_posts' %}">我的发布</a></li>
-        </ul>
-      </li>
-      <li>
-        <strong>个人中心</strong>
-        <ul>
-          <li><a href="{% url 'community_core:household_profile_index' %}">个人中心首页</a></li>
-          <li><a href="{% url 'community_core:household_personal_info' %}">个人信息</a></li>
-          <li><a href="{% url 'community_core:household_family_members' %}">家庭成员</a></li>
-          <li><a href="{% url 'community_core:household_housing_info' %}">房屋信息</a></li>
-          <li><a href="{% url 'community_core:household_change_password' %}">修改密码</a></li>
-          <li><a href="{% url 'community_core:household_messages' %}">消息通知</a></li>
-          <li><a href="{% url 'community_core:household_feedback' %}">意见反馈</a></li>
-        </ul>
-      </li>
-    </ul>
-  </aside>
+{% block household_content %}
+<h2>欢迎，{{ user.username }}</h2>
+<p style="color:#7f8c8d; margin-bottom:1rem;">您已以「户主」身份登录，请从左侧菜单进入各功能。</p>
 
-  <section class="dashboard-content">
-    <h3>快捷入口</h3>
-    <p>当前功能模块尚在逐步建设中，以上菜单为户主将来可用的业务功能结构。</p>
-    <ul>
-      <li>优先计划：费用中心、报事报修、访客管理、社区公告。</li>
-      <li>后续迭代：车辆管理、社区服务、邻里圈、个人中心细节功能。</li>
-    </ul>
-  </section>
-</div>
+<h3>快捷入口</h3>
+<ul>
+  <li><a href="{% url 'community_core:household_announcement_list' %}">查看公告</a></li>
+  <li><a href="{% url 'property_fees:household_bill_list' %}">我的账单</a></li>
+  <li><a href="{% url 'repair:household_repair_create' %}">我要报修</a></li>
+  <li><a href="{% url 'community_core:household_neighborhood_feed' %}">邻里圈动态</a></li>
+  <li><a href="{% url 'community_core:household_profile_index' %}">个人中心</a></li>
+</ul>
 {% endblock %}

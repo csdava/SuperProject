@@ -1,12 +1,12 @@
-{% extends "base.html" %}
-{% block title %}发布动态{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}发布动态 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>发布到邻里圈</h2>
-<p><a href="{% url 'community_core:household_neighborhood_feed' %}">返回邻里圈</a></p>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_neighborhood_feed' %}">← 邻里圈</a></p>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">发布</button>
 </form>
-<p>选择「动态」可分享生活；「二手市场」可发闲置；「邻里互助」可求助或提供帮助。</p>
-{% endblock %}
+<p style="color:#7f8c8d; margin-top:0.5rem;">选择「动态」可分享生活；「二手市场」可发闲置；「邻里互助」可求助或提供帮助。</p>
+{% endblock household_content %}

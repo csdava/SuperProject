@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}编辑用户 - 用户账号管理{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>编辑用户：{{ edit_user.username }}</h2>
-<p><a href="{% url 'accounts:admin_user_list' %}">返回用户列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'accounts:admin_user_list' %}">← 返回用户列表</a></p>
 
 <form method="post">
   {% csrf_token %}

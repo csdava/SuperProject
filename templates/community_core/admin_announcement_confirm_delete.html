@@ -1,6 +1,6 @@
-{% extends "base.html" %}
-{% block title %}删除公告{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}删除公告 - 社区服务{% endblock %}
+{% block admin_content %}
 <h2>确认删除公告</h2>
 <p>确定要删除公告「{{ announcement.title }}」吗？</p>
 <form method="post" action="">
@@ -8,4 +8,4 @@
   <button type="submit">确认删除</button>
   <a href="{% url 'community_core:admin_announcement_list' %}">取消</a>
 </form>
-{% endblock %}
+{% endblock admin_content %}

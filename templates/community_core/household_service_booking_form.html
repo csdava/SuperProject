@@ -1,12 +1,12 @@
-{% extends "base.html" %}
-{% block title %}家政预约{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}家政预约 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>家政预约</h2>
-<p><a href="{% url 'community_core:household_service_booking_list' %}">返回预约列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_service_booking_list' %}">← 预约列表</a></p>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">提交预约</button>
 </form>
-<p class="text-muted" style="font-size:0.9em;">提交后物业将联系您确认服务时间。</p>
-{% endblock %}
+<p style="color:#7f8c8d; font-size:0.9em; margin-top:0.5rem;">提交后物业将联系您确认服务时间。</p>
+{% endblock household_content %}

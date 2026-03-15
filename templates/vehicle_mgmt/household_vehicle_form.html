@@ -1,11 +1,11 @@
-{% extends "base.html" %}
-{% block title %}{% if is_edit %}编辑车辆{% else %}登记车辆{% endif %}{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}{% if is_edit %}编辑车辆{% else %}登记车辆{% endif %} - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>{% if is_edit %}编辑车辆{% else %}登记车辆{% endif %}</h2>
-<p><a href="{% url 'vehicle_mgmt:household_vehicle_list' %}">返回车辆列表</a></p>
+<p class="admin-toolbar"><a href="{% url 'vehicle_mgmt:household_vehicle_list' %}">← 车辆列表</a></p>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">保存</button>
 </form>
-{% endblock %}
+{% endblock household_content %}

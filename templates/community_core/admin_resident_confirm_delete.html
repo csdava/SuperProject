@@ -1,6 +1,6 @@
-{% extends "base.html" %}
-{% block title %}删除住户{% endblock %}
-{% block content %}
+{% extends "accounts/base_admin.html" %}
+{% block title %}删除住户 - 住户管理{% endblock %}
+{% block admin_content %}
 <h2>确认删除住户</h2>
 <p>确定要删除住户「{{ resident.name }}」（{{ resident.room }}）吗？此操作不可恢复。</p>
 <form method="post" action="">
@@ -8,4 +8,4 @@
   <button type="submit">确认删除</button>
   <a href="{% url 'community_core:admin_room_detail' resident.room_id %}">取消</a>
 </form>
-{% endblock %}
+{% endblock admin_content %}

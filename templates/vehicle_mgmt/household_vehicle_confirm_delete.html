@@ -1,6 +1,6 @@
-{% extends "base.html" %}
-{% block title %}删除车辆登记{% endblock %}
-{% block content %}
+{% extends "accounts/base_household.html" %}
+{% block title %}删除车辆登记 - 邻里圈{% endblock %}
+{% block household_content %}
 <h2>确认删除</h2>
 <p>确定要删除车辆「{{ vehicle.plate_number }}」的登记吗？</p>
 <form method="post" action="">
@@ -8,4 +8,4 @@
   <button type="submit">确认删除</button>
   <a href="{% url 'vehicle_mgmt:household_vehicle_list' %}">取消</a>
 </form>
-{% endblock %}
+{% endblock household_content %}

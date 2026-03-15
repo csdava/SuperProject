@@ -1,10 +1,7 @@
-{% extends "base.html" %}
-{% block title %}工单管理 - 管理员{% endblock %}
-{% block content %}
-<h2>工单管理</h2>
-<p>
-  <a href="{% url 'accounts:dashboard_admin' %}">返回工作台</a>
-</p>
+{% extends "accounts/base_admin.html" %}
+{% block title %}工单管理 - 工单管理{% endblock %}
+{% block admin_content %}
+<h2>工单列表</h2>
 
 <form method="get" class="filter-form">
   <p>
@@ -75,4 +72,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock admin_content %}

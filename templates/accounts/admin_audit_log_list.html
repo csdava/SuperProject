@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}操作日志 - 系统管理{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>操作日志</h2>
-<p><a href="{% url 'accounts:dashboard_admin' %}">返回管理后台</a></p>
 
-<form method="get" style="margin:1em 0;">
+<form method="get" class="filter-form">
   <select name="action">
     <option value="">全部操作类型</option>
     {% for a in actions %}
@@ -38,7 +37,7 @@
 </table>
 
 {% if page_obj.has_other_pages %}
-<p>
+<p class="admin-toolbar">
   {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if action_filter %}&action={{ action_filter }}{% endif %}">上一页</a>{% endif %}
   第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
   {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if action_filter %}&action={{ action_filter }}{% endif %}">下一页</a>{% endif %}

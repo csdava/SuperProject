@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "accounts/base_admin.html" %}
 {% block title %}用户账号管理 - 系统管理{% endblock %}
-{% block content %}
+{% block admin_content %}
 <h2>用户账号管理</h2>
-<p><a href="{% url 'accounts:dashboard_admin' %}">返回管理后台</a></p>
 
-<form method="get" class="filter-form" style="margin:1em 0;">
+<form method="get" class="filter-form">
   <label>身份</label>
   <select name="role">
     <option value="">全部</option>
@@ -47,7 +46,7 @@
 </table>
 
 {% if page_obj.has_other_pages %}
-<p>
+<p class="admin-toolbar">
   {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if is_approved_filter %}&is_approved={{ is_approved_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}">上一页</a>{% endif %}
   第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
   {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if is_approved_filter %}&is_approved={{ is_approved_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}">下一页</a>{% endif %}

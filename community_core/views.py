@@ -49,8 +49,16 @@ User = get_user_model()
 
 
 def home(request):
-    """智慧社区管理系统 - 首页（入口页）。"""
-    return render(request, "community_core/home.html")
+    """邻里圈 - 入口页：未登录显示动态落地页，已登录跳转工作台。"""
+    if request.user.is_authenticated:
+        profile = getattr(request.user, "profile", None)
+        if profile:
+            if profile.role == UserProfile.Role.ADMIN:
+                return redirect("accounts:dashboard_admin")
+            if profile.role == UserProfile.Role.MAINTENANCE:
+                return redirect("accounts:dashboard_maintenance")
+        return redirect("accounts:dashboard_household")
+    return render(request, "community_core/landing.html")
 
 
 def _require_admin(request):

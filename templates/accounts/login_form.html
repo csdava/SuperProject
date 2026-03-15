@@ -1,19 +1,29 @@
 {% extends "base.html" %}
-{% block title %}输入账号密码 - 登录{% endblock %}
+{% block title %}输入账号密码 - 登录 - 邻里圈{% endblock %}
 {% block content %}
-<h2>登录 - {{ role_display }}</h2>
-<p>您正在以「{{ role_display }}」身份登录。</p>
-<form method="post" action="{% url 'accounts:login_form' %}">
-  {% csrf_token %}
-  <p>
-    <label for="id_username">用户名</label>
-    <input type="text" name="username" id="id_username" required autofocus>
-  </p>
-  <p>
-    <label for="id_password">密码</label>
-    <input type="password" name="password" id="id_password" required>
-  </p>
-  <button type="submit">登录</button>
-</form>
-<p><a href="{% url 'accounts:login_select_role' %}">返回重新选择身份</a></p>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <h2>登录 · {{ role_display }}</h2>
+      <p>您正在以「{{ role_display }}」身份登录</p>
+    </div>
+    <div class="auth-card-body">
+      <form method="post" action="{% url 'accounts:login_form' %}" class="auth-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="id_username">用户名</label>
+          <input type="text" name="username" id="id_username" required autofocus placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+          <label for="id_password">密码</label>
+          <input type="password" name="password" id="id_password" required placeholder="请输入密码">
+        </div>
+        <button type="submit" class="btn-primary">登录</button>
+      </form>
+    </div>
+    <div class="auth-card-footer">
+      <a href="{% url 'accounts:login_select_role' %}">← 返回重新选择身份</a>
+    </div>
+  </div>
+</div>
 {% endblock %}
