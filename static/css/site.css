@@ -82,7 +82,7 @@ footer {
 
 main {
   margin: 0 1rem;
-  padding: 1rem 0;
+  padding: 0 0 1rem;
 }
 
 .messages { list-style: none; padding-left: 0; }
@@ -136,10 +136,11 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
 
 .dashboard-menu a {
   text-decoration: none;
-  color: #06c;
+  color: #555;
 }
 
 .dashboard-menu a:hover {
+  color: #333;
   text-decoration: underline;
 }
 
@@ -167,6 +168,7 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
   font-size: 1.6rem;
   font-weight: bold;
   margin: 0.25rem 0;
+  color: #333;
 }
 
 .card-desc {
@@ -182,12 +184,13 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
 
 .simple-table th,
 .simple-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   padding: 0.4rem 0.6rem;
 }
 
 .simple-table th {
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
+  color: #444;
 }
 
 /* 过滤表单与标签样式 */
@@ -213,69 +216,166 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
   padding: 0 0.4rem;
   margin-right: 0.2rem;
   margin-bottom: 0.1rem;
-  border-radius: 3px;
-  background-color: #eef5ff;
-  color: #0645ad;
+  border-radius: 4px;
+  background-color: #e8e8e8;
+  color: #555;
   font-size: 0.85rem;
 }
-.tag.overdue { background-color: #ffe0e0; color: #c00; }
+.tag.overdue { background-color: #eee0e0; color: #884444; }
 
 /* 户主个人中心 */
 .profile-nav { margin: 0.5rem 0 1rem; }
 .profile-nav a { margin-right: 1rem; }
 .notice { color: #a60; }
 
-/* ========== 管理员端：左边目录栏 + 右边功能界面 ========== */
-.admin-layout {
-  display: flex;
-  min-height: calc(100vh - 8rem);
-  margin: 0 -1rem;
+/* ========== 三端共用：左边目录栏 + 右边功能界面（与系统标题页一致，低饱和度） ========== */
+/* 工作台：顶栏 + main 均 fixed，高度由 --app-header-height（base.html 内联脚本测量）决定，从文档流中剥离，避免整页滚动 */
+:root {
+  --app-header-height: 52px;
 }
-.admin-sidebar {
+html.app-dashboard-shell-html {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+html.app-dashboard-shell-html,
+body.app-dashboard-shell {
+  max-height: 100dvh;
+  overscroll-behavior: none;
+}
+body.app-dashboard-shell {
+  box-sizing: border-box;
+  margin: 0;
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+body.app-dashboard-shell .site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+}
+body.app-dashboard-shell main {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--app-header-height);
+  bottom: 0;
+  z-index: 0;
+  min-height: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0 0 1rem;
+  overflow: hidden;
+  overscroll-behavior: none;
+  box-sizing: border-box;
+}
+
+.admin-layout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+body.app-dashboard-shell .admin-sidebar {
   width: 240px;
-  flex-shrink: 0;
-  background: #2c3e50;
-  color: #ecf0f1;
+  flex: 0 0 240px;
+  height: 100%;
+  max-height: 100%;
+  background: #e5e5e5;
+  color: #444;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid #d0d0d0;
+  min-height: 0;
+  overflow: hidden;
 }
 .admin-sidebar-header {
+  flex-shrink: 0;
   padding: 1rem 1rem 0.75rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid #d0d0d0;
 }
 .admin-sidebar-header > a {
-  color: #ecf0f1;
+  color: #333;
   text-decoration: none;
   font-weight: bold;
   font-size: 1.05rem;
 }
 .admin-sidebar-header > a:hover {
-  color: #fff;
+  color: #222;
 }
 .admin-user {
   display: block;
   font-size: 0.85rem;
-  color: #bdc3c7;
+  color: #666;
   margin-top: 0.35rem;
 }
 .admin-nav {
-  flex: 1;
+  flex: 1 1 0%;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
-.admin-nav-group {
-  margin-bottom: 0.5rem;
+details.admin-nav-group {
+  margin-bottom: 0.15rem;
 }
-.admin-nav-title {
+summary.admin-nav-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #95a5a6;
-  padding: 0.5rem 1rem 0.25rem;
+  color: #555;
+  padding: 0.45rem 1rem 0.35rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  border-radius: 4px;
+}
+summary.admin-nav-summary::-webkit-details-marker {
+  display: none;
+}
+summary.admin-nav-summary::marker {
+  content: "";
+}
+.admin-nav-chevron {
+  flex-shrink: 0;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-right: 2px solid #777;
+  border-bottom: 2px solid #777;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+  margin-top: -0.08rem;
+}
+details.admin-nav-group[open] > summary .admin-nav-chevron {
+  transform: rotate(45deg);
+  margin-top: 0.06rem;
+}
+summary.admin-nav-summary:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 .admin-nav ul {
   list-style: none;
-  padding: 0;
+  padding: 0 0 0.35rem;
   margin: 0;
 }
 .admin-nav li {
@@ -283,141 +383,151 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
 }
 .admin-nav a {
   display: block;
-  padding: 0.45rem 1rem;
-  color: #bdc3c7;
+  padding: 0.45rem 1rem 0.45rem 1.85rem;
+  color: #555;
   text-decoration: none;
   font-size: 0.9rem;
   border-left: 3px solid transparent;
 }
 .admin-nav a:hover {
-  background: rgba(255,255,255,0.06);
-  color: #ecf0f1;
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 .admin-nav a.active {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  border-left-color: #3498db;
+  background: rgba(0, 0, 0, 0.08);
+  color: #333;
+  border-left-color: #888;
+  font-weight: 500;
 }
 .admin-sidebar-footer {
+  flex-shrink: 0;
   padding: 0.75rem 1rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid #d0d0d0;
 }
 .admin-sidebar-footer a {
-  color: #95a5a6;
+  color: #666;
   font-size: 0.85rem;
   text-decoration: none;
 }
 .admin-sidebar-footer a:hover {
-  color: #ecf0f1;
+  color: #444;
 }
-.admin-content {
-  flex: 1;
+body.app-dashboard-shell .admin-content {
+  flex: 1 1 0%;
   min-width: 0;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 1.25rem 1.5rem;
-  background: #f8f9fa;
+  background: #f5f5f5;
 }
 .admin-content h2 {
   margin: 0 0 1rem;
   font-size: 1.35rem;
-  color: #2c3e50;
+  color: #333;
 }
 .admin-content h3 {
   margin: 1.25rem 0 0.75rem;
   font-size: 1.1rem;
-  color: #34495e;
+  color: #444;
 }
 .admin-content .cards-row {
   margin-bottom: 1.25rem;
 }
 .admin-content .card {
   background: #fff;
-  border-color: #e9ecef;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  border-color: #e0e0e0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 .admin-content .card a {
-  color: #3498db;
+  color: #555;
   text-decoration: none;
 }
 .admin-content .card a:hover {
+  color: #333;
   text-decoration: underline;
 }
 .admin-content .simple-table {
   background: #fff;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
 }
 .admin-content .simple-table th {
-  background: #f1f3f5;
-  color: #495057;
+  background: #f0f0f0;
+  color: #444;
   font-weight: 600;
 }
 .admin-content .simple-table td a {
-  color: #3498db;
+  color: #555;
   text-decoration: none;
 }
 .admin-content .simple-table td a:hover {
+  color: #333;
   text-decoration: underline;
 }
 .admin-content ul:not(.messages) {
   padding-left: 1.25rem;
 }
 .admin-content ul:not(.messages) a {
-  color: #3498db;
+  color: #555;
 }
 .admin-toolbar {
   margin-bottom: 1rem;
 }
 .admin-toolbar a {
-  color: #3498db;
+  color: #555;
   text-decoration: none;
 }
 .admin-toolbar a:hover {
+  color: #333;
   text-decoration: underline;
 }
 
-/* ========== 登录 / 注册（梦幻配色：薰衣草紫、淡粉、浅紫渐变） ========== */
+/* ========== 登录 / 注册 ========== */
 .auth-page {
   min-height: calc(100vh - 10rem);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #e8e0f5 0%, #f5e0f0 35%, #e0e8f8 70%, #f0e5f5 100%);
-  background-attachment: fixed;
 }
 
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(155, 120, 200, 0.18), 0 2px 8px rgba(180, 140, 220, 0.12);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  border: 1px solid rgba(200, 180, 230, 0.5);
-  backdrop-filter: blur(12px);
+  border: 1px solid #e0e0e0;
 }
 
 .auth-card-header {
   padding: 1.5rem 1.75rem;
   text-align: center;
-  background: linear-gradient(120deg, #c4b5e0 0%, #d4a5d8 50%, #b8c8f0 100%);
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  background: transparent;
+  color: #333;
+  border-bottom: 1px solid #eee;
 }
 
 .auth-card-header h2 {
   margin: 0;
   font-size: 1.35rem;
   font-weight: 600;
-  color: #fff;
+  color: #333;
   letter-spacing: 0.02em;
 }
 
 .auth-card-header p {
   margin: 0.5rem 0 0;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: #666;
 }
 
 .auth-card-body {
@@ -488,21 +598,20 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
 .auth-form .btn-primary {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+  background: #444;
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   margin-top: 0.5rem;
-  transition: transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px rgba(167, 139, 250, 0.35);
+  transition: background 0.2s, transform 0.15s;
 }
 
 .auth-form .btn-primary:hover {
+  background: #333;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(167, 139, 250, 0.45);
 }
 
 .auth-form .btn-primary:active {
@@ -513,11 +622,11 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
   padding: 0 1.75rem 1.75rem;
   text-align: center;
   font-size: 0.9rem;
-  color: #7c6b8f;
+  color: #666;
 }
 
 .auth-card-footer a {
-  color: #8b5cf6;
+  color: #0a58ca;
   text-decoration: none;
   font-weight: 500;
 }
@@ -538,23 +647,22 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
   display: flex;
   align-items: flex-start;
   padding: 1rem 1rem;
-  border: 1px solid rgba(200, 180, 230, 0.6);
-  border-radius: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  background: rgba(255, 255, 255, 0.7);
+  transition: border-color 0.2s, background 0.2s;
+  background: #fff;
 }
 
 .auth-role-option:hover {
-  border-color: #c4b5e0;
-  background: rgba(232, 224, 245, 0.8);
-  box-shadow: 0 2px 12px rgba(167, 139, 250, 0.15);
+  border-color: #bbb;
+  background: #f5f5f5;
 }
 
 .auth-role-option input {
   margin: 0.25rem 0.75rem 0 0;
   flex-shrink: 0;
-  accent-color: #a78bfa;
+  accent-color: #555;
 }
 
 .auth-role-option-content {
@@ -591,7 +699,7 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
 
 .auth-role-inline input {
   margin-right: 0.4rem;
-  accent-color: #a78bfa;
+  accent-color: #555;
 }
 
 .auth-form .auth-role-inline ul {
@@ -613,4 +721,152 @@ form ul.errorlist { list-style: none; padding-left: 0; color: #c00; font-size: 0
   display: inline-flex;
   align-items: center;
   margin-bottom: 0;
+}
+
+/* ========== 户主 / 维修工作台：快捷入口（横向方形磁贴） ========== */
+.dash-home {
+  max-width: 52rem;
+}
+.dash-home-header {
+  margin-bottom: 1.75rem;
+}
+.admin-content .dash-home-header h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  color: #333;
+}
+.dash-home-lead {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.admin-content .dash-quick-section h3 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+}
+.dash-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+.dash-quick-tile {
+  aspect-ratio: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.dash-quick-tile:hover {
+  border-color: #c0c0c0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+.dash-quick-tile:focus-visible {
+  outline: 2px solid #666;
+  outline-offset: 2px;
+}
+.dash-quick-icon {
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+  color: #555;
+}
+.dash-quick-tile:hover .dash-quick-icon {
+  color: #222;
+}
+.dash-quick-tile-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+@media (max-width: 900px) {
+  .dash-quick-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .dash-quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 管理后台：快捷操作 5 项，宽屏五列；窄屏与通用 dash-quick-grid 断点一致 */
+.dash-home--admin .dash-quick-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  max-width: none;
+}
+
+/* 户主端：邻里圈动态与社区公告共用同一套卡片流样式 */
+.hh-stream-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.hh-stream-item {
+  border: 1px solid #eee;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background: #fff;
+}
+.hh-stream-badge {
+  color: #888;
+  font-size: 0.9em;
+}
+.hh-stream-item .hh-stream-title {
+  display: block;
+  margin: 0.35rem 0 0.25rem;
+}
+.hh-stream-body {
+  margin: 0.5rem 0 0;
+}
+.hh-stream-body p:first-child {
+  margin-top: 0;
+}
+.hh-stream-contact {
+  color: #666;
+  margin: 0.65rem 0 0;
+  font-size: 0.95rem;
+}
+.hh-stream-meta {
+  color: #999;
+  font-size: 0.9em;
+  margin: 0.75rem 0 0;
+}
+.hh-stream-meta a {
+  margin-left: 0.35rem;
+}
+.hh-stream-empty {
+  list-style: none;
+  border: none;
+  padding: 12px 0;
+  margin: 0;
+  color: #666;
+}
+.hh-stream-detail-meta {
+  margin: 0 0 1rem;
+  color: #888;
+  font-size: 0.95rem;
+}
+.hh-stream-detail-body {
+  margin: 0;
+}
+.hh-stream-detail-body p:first-child {
+  margin-top: 0;
 }

@@ -2,7 +2,11 @@
 {% block title %}{{ announcement.title }} - 邻里圈{% endblock %}
 {% block household_content %}
 <h2>{{ announcement.title }}</h2>
-<p class="admin-toolbar"><a href="{% url 'community_core:household_announcement_list' %}">← 公告列表</a></p>
-<p style="color:#666;">发布时间：{{ announcement.published_at|date:"Y-m-d H:i" }}</p>
-<div>{{ announcement.content|linebreaks }}</div>
+<p class="admin-toolbar"><a href="{% url 'community_core:household_announcement_list' %}">← 社区公告</a></p>
+<p class="hh-stream-detail-meta">
+  <span class="hh-stream-badge">{% if announcement.is_pinned %}[置顶] {% endif %}[公告]</span>
+  {% if announcement.created_by %}{{ announcement.created_by.username }}{% else %}物业{% endif %}
+  · {{ announcement.published_at|date:"Y-m-d H:i" }}
+</p>
+<div class="hh-stream-detail-body">{{ announcement.content|linebreaks }}</div>
 {% endblock household_content %}

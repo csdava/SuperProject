@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
-from .models import UserProfile, SystemConfig
+from .models import UserProfile, SystemConfig, HouseholdComfortSetting
 
 
 class RegisterForm(UserCreationForm):
@@ -60,3 +60,38 @@ class SystemConfigForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.edit_key is not None:
             self.fields["key"].disabled = True
+
+
+class HouseholdComfortSettingForm(forms.ModelForm):
+    """户主舒适温湿度范围设置。"""
+
+    class Meta:
+        model = HouseholdComfortSetting
+        fields = ("temp_min", "temp_max", "humidity_min", "humidity_max")
+        widgets = {
+            "temp_min": forms.NumberInput(attrs={"step": "0.1", "required": "required"}),
+            "temp_max": forms.NumberInput(attrs={"step": "0.1", "required": "required"}),
+            "humidity_min": forms.NumberInput(attrs={"step": "0.1", "required": "required"}),
+            "humidity_max": forms.NumberInput(attrs={"step": "0.1", "required": "required"}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        temp_min = cleaned.get("temp_min")
+        temp_max = cleaned.get("temp_max")
+        humidity_min = cleaned.get("humidity_min")
+        humidity_max = cleaned.get("humidity_max")
+
+        if temp_min is not None and temp_max is not None and temp_min > temp_max:
+            raise forms.ValidationError("温度下限不能大于温度上限。")
+
+        if humidity_min is not None and humidity_max is not None and humidity_min > humidity_max:
+            raise forms.ValidationError("湿度下限不能大于湿度上限。")
+
+        # 简单边界：湿度理论上 0~100
+        if humidity_min is not None and (humidity_min < 0 or humidity_min > 100):
+            raise forms.ValidationError("湿度下限需在 0~100 之间。")
+        if humidity_max is not None and (humidity_max < 0 or humidity_max > 100):
+            raise forms.ValidationError("湿度上限需在 0~100 之间。")
+
+        return cleaned

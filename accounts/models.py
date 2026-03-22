@@ -108,3 +108,50 @@ class SystemConfig(models.Model):
 
     def __str__(self):
         return self.key
+
+
+class HouseholdComfortSetting(models.Model):
+    """户主舒适温湿度范围设置（用于工作台提醒）。"""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="household_comfort_setting",
+        verbose_name="户主用户",
+    )
+
+    temp_min = models.DecimalField(
+        "温度下限（摄氏度）",
+        max_digits=4,
+        decimal_places=1,
+        default=18.0,
+    )
+    temp_max = models.DecimalField(
+        "温度上限（摄氏度）",
+        max_digits=4,
+        decimal_places=1,
+        default=28.0,
+    )
+
+    humidity_min = models.DecimalField(
+        "湿度下限（%RH）",
+        max_digits=4,
+        decimal_places=1,
+        default=40.0,
+    )
+    humidity_max = models.DecimalField(
+        "湿度上限（%RH）",
+        max_digits=4,
+        decimal_places=1,
+        default=70.0,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="更新时间")
+
+    class Meta:
+        verbose_name = "户主舒适范围"
+        verbose_name_plural = "户主舒适范围"
+
+    def __str__(self):
+        return f"{self.user.username} - Comfort"

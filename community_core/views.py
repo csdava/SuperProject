@@ -843,7 +843,11 @@ def household_announcement_list(request):
     denied = _require_household(request)
     if denied:
         return denied
-    announcements = Announcement.objects.filter(is_published=True).order_by("-is_pinned", "-published_at", "-created_at")[:50]
+    announcements = (
+        Announcement.objects.filter(is_published=True)
+        .select_related("created_by")
+        .order_by("-is_pinned", "-published_at", "-created_at")[:50]
+    )
     return render(request, "community_core/household_announcement_list.html", {"announcements": announcements})
 
 
@@ -853,7 +857,11 @@ def household_announcement_detail(request, pk):
     denied = _require_household(request)
     if denied:
         return denied
-    announcement = get_object_or_404(Announcement, pk=pk, is_published=True)
+    announcement = get_object_or_404(
+        Announcement.objects.select_related("created_by"),
+        pk=pk,
+        is_published=True,
+    )
     return render(request, "community_core/household_announcement_detail.html", {"announcement": announcement})
 
 

@@ -4,11 +4,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
+from urllib.parse import urlencode
 from django.db import models
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 
-from .forms import RegisterForm, LoginForm, AdminUserProfileForm, SystemConfigForm
-from .models import UserProfile, LoginLog, AuditLog, SystemConfig
+from .forms import (
+    RegisterForm,
+    LoginForm,
+    AdminUserProfileForm,
+    SystemConfigForm,
+    HouseholdComfortSettingForm,
+)
+from .models import UserProfile, LoginLog, AuditLog, SystemConfig, HouseholdComfortSetting
 
 # 工单待处理数（管理台展示）
 try:
@@ -143,12 +152,109 @@ def logout_view(request):
 
 @login_required(login_url="accounts:login_select_role")
 def dashboard_household(request):
-    """户主工作台（占位）。"""
+    """户主工作台：温湿度提醒 + 快捷入口。"""
     profile = _get_or_create_profile(request.user)
     if profile.role != UserProfile.Role.HOUSEHOLD:
         messages.warning(request, "您当前身份无权访问户主工作台。")
         return redirect(_redirect_by_role(profile.role))
-    return render(request, "accounts/dashboard_household.html")
+
+    comfort, _created = HouseholdComfortSetting.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = HouseholdComfortSettingForm(request.POST, instance=comfort)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "已保存温湿度舒适范围。")
+            return redirect("accounts:dashboard_household")
+    else:
+        form = HouseholdComfortSettingForm(instance=comfort)
+
+    # 当前温湿度数据：优先从系统参数读取；项目未对接硬件时可用默认值演示。
+    def _get_system_float(key: str, default: float) -> float:
+        try:
+            obj = SystemConfig.objects.get(key=key)
+            return float((obj.value or "").strip())
+        except Exception:
+            return default
+
+    current_temp = _get_system_float("current_temperature_c", default=26.0)
+    current_humidity = _get_system_float("current_humidity_rh", default=55.0)
+
+    # 根据用户设置阈值生成提醒文案
+    if current_temp > comfort.temp_max:
+        temp_advice = "气温较高，小心中暑"
+    elif current_temp < comfort.temp_min:
+        temp_advice = "气温较低，注意保暖"
+    else:
+        temp_advice = "气温适宜，今天是舒适的一天"
+
+    if current_humidity > comfort.humidity_max:
+        humidity_advice = "今天可能降雨，带把伞吧"
+    elif current_humidity < comfort.humidity_min:
+        humidity_advice = "今天过于干燥，注意补水"
+    else:
+        humidity_advice = "湿度适宜，今天是平静的一天"
+
+    context = {
+        "comfort": comfort,
+        "form": form,
+        "current_temp": current_temp,
+        "current_humidity": current_humidity,
+        "temp_advice": temp_advice,
+        "humidity_advice": humidity_advice,
+    }
+    return render(request, "accounts/dashboard_household.html", context)
+
+
+@login_required(login_url="accounts:login_select_role")
+def household_current_sensor(request):
+    """户主工作台轮询接口：返回最新温湿度 + 提醒文案。"""
+    profile = _get_or_create_profile(request.user)
+    if profile.role != UserProfile.Role.HOUSEHOLD:
+        return JsonResponse({"error": "forbidden"}, status=403)
+
+    comfort, _created = HouseholdComfortSetting.objects.get_or_create(user=request.user)
+
+    def _get_system_float(key: str, default: float) -> float:
+        try:
+            obj = SystemConfig.objects.get(key=key)
+            return float((obj.value or "").strip())
+        except Exception:
+            return default
+
+    current_temp = _get_system_float("current_temperature_c", default=26.0)
+    current_humidity = _get_system_float("current_humidity_rh", default=55.0)
+
+    # 根据用户设置阈值生成提醒文案
+    if current_temp > comfort.temp_max:
+        temp_advice = "气温较高，小心中暑"
+    elif current_temp < comfort.temp_min:
+        temp_advice = "气温较低，注意保暖"
+    else:
+        temp_advice = "气温适宜，今天是舒适的一天"
+
+    if current_humidity > comfort.humidity_max:
+        humidity_advice = "今天可能降雨，带把伞吧"
+    elif current_humidity < comfort.humidity_min:
+        humidity_advice = "今天过于干燥，注意补水"
+    else:
+        humidity_advice = "湿度适宜，今天是平静的一天"
+
+    return JsonResponse(
+        {
+            "current_temp": round(current_temp, 1),
+            "current_humidity": round(current_humidity, 1),
+            "temp_advice": temp_advice,
+            "humidity_advice": humidity_advice,
+            # 返回区间，便于前端展示（一般不会频繁变化）
+            "comfort": {
+                "temp_min": float(comfort.temp_min),
+                "temp_max": float(comfort.temp_max),
+                "humidity_min": float(comfort.humidity_min),
+                "humidity_max": float(comfort.humidity_max),
+            },
+        }
+    )
 
 
 @login_required(login_url="accounts:login_select_role")
@@ -210,10 +316,53 @@ def _require_admin(request):
 
 @login_required(login_url="accounts:login_select_role")
 def admin_user_list(request):
-    """系统管理 - 用户账号管理：列表、按身份筛选、搜索。"""
+    """系统管理 - 用户账号管理：列表、按身份筛选、搜索、批量审批。"""
     r = _require_admin(request)
     if r is not None:
         return r
+
+    # 批量通过审批
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "bulk_approve":
+            user_ids = request.POST.getlist("user_ids")
+            if not user_ids:
+                messages.warning(request, "请先勾选要审批的用户。")
+            else:
+                users = User.objects.filter(id__in=user_ids).select_related("profile")
+                approved_count = 0
+                for user in users:
+                    profile = _get_or_create_profile(user)
+                    if not profile.is_approved:
+                        profile.is_approved = True
+                        profile.save(update_fields=["is_approved"])
+                        approved_count += 1
+                        AuditLog.objects.create(
+                            user=request.user,
+                            action="用户审批",
+                            message=f"批量审批：用户 {user.username} 通过",
+                        )
+                if approved_count:
+                    messages.success(request, f"已批量通过 {approved_count} 个用户的审批。")
+                else:
+                    messages.info(request, "所选用户均已审批，无需重复操作。")
+        # 保留当前筛选条件与搜索关键字
+        params = {}
+        role_filter_post = request.POST.get("role") or ""
+        is_approved_filter_post = request.POST.get("is_approved") or ""
+        search_post = (request.POST.get("q") or "").strip()
+        if role_filter_post:
+            params["role"] = role_filter_post
+        if is_approved_filter_post in ("0", "1"):
+            params["is_approved"] = is_approved_filter_post
+        if search_post:
+            params["q"] = search_post
+        redirect_url = reverse("accounts:admin_user_list")
+        if params:
+            redirect_url = f"{redirect_url}?{urlencode(params)}"
+        return redirect(redirect_url)
+
+    # 列表筛选与搜索（GET）
     qs = User.objects.all().select_related("profile").order_by("-id")
     role_filter = request.GET.get("role")
     if role_filter and role_filter in dict(UserProfile.Role.choices):

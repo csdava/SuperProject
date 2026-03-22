@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="{% block html_class %}{% endblock %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}邻里圈{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/site.css">
+    <link rel="stylesheet" href="/static/css/site.css?v=20250321i">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <header class="site-header">
         <div class="header-inner">
             <a href="{% url 'community_core:home' %}" class="brand">邻里圈</a>
@@ -32,19 +32,27 @@
             </nav>
         </div>
     </header>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
     <main>
         {% block content %}{% endblock %}
     </main>
-    <footer>
-        <p>数据库：SQLite | 后端：Django | 前端：HTML</p>
-    </footer>
     {% block extra_js %}{% endblock %}
+    <script>
+    (function () {
+      function syncAppShellHeader() {
+        var hdr = document.querySelector("body.app-dashboard-shell .site-header");
+        if (!hdr) return;
+        document.documentElement.style.setProperty("--app-header-height", hdr.offsetHeight + "px");
+      }
+      if (document.body.classList.contains("app-dashboard-shell")) {
+        syncAppShellHeader();
+        window.addEventListener("resize", syncAppShellHeader);
+        window.addEventListener("orientationchange", syncAppShellHeader);
+        if (window.ResizeObserver) {
+          var h = document.querySelector("body.app-dashboard-shell .site-header");
+          if (h) new ResizeObserver(syncAppShellHeader).observe(h);
+        }
+      }
+    })();
+    </script>
 </body>
 </html>

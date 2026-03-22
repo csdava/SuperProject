@@ -2,15 +2,141 @@
 {% block title %}户主工作台 - 邻里圈{% endblock %}
 
 {% block household_content %}
-<h2>欢迎，{{ user.username }}</h2>
-<p style="color:#7f8c8d; margin-bottom:1rem;">您已以「户主」身份登录，请从左侧菜单进入各功能。</p>
+<h2>户主工作台</h2>
 
-<h3>快捷入口</h3>
-<ul>
-  <li><a href="{% url 'community_core:household_announcement_list' %}">查看公告</a></li>
-  <li><a href="{% url 'property_fees:household_bill_list' %}">我的账单</a></li>
-  <li><a href="{% url 'repair:household_repair_create' %}">我要报修</a></li>
-  <li><a href="{% url 'community_core:household_neighborhood_feed' %}">邻里圈动态</a></li>
-  <li><a href="{% url 'community_core:household_profile_index' %}">个人中心</a></li>
-</ul>
+<p style="color:#666; margin-bottom:1rem;">欢迎，{{ user.username }}</p>
+
+<p class="admin-toolbar">
+  <a href="{% url 'community_core:household_personal_info' %}">编辑个人信息</a>
+</p>
+
+<h3>温湿度提醒</h3>
+
+<div class="cards-row">
+  <div class="card">
+    <h4>温度</h4>
+    <p class="card-number" id="current_temp_display">{{ current_temp }}°C</p>
+    <p class="card-desc" id="temp_advice_display">{{ temp_advice }}</p>
+    <p class="card-desc">舒适区间：{{ comfort.temp_min }}°C ~ {{ comfort.temp_max }}°C</p>
+  </div>
+  <div class="card">
+    <h4>湿度</h4>
+    <p class="card-number" id="current_humidity_display">{{ current_humidity }}%RH</p>
+    <p class="card-desc" id="humidity_advice_display">{{ humidity_advice }}</p>
+    <p class="card-desc">舒适区间：{{ comfort.humidity_min }} ~ {{ comfort.humidity_max }} %RH</p>
+  </div>
+</div>
+
+<h3>设置舒适范围</h3>
+<form method="post" class="filter-form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <ul class="errorlist">
+      {% for e in form.non_field_errors %}
+        <li class="error">{{ e }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <p>
+    <label>温度下限(°C)</label>
+    {{ form.temp_min }}
+    {% if form.temp_min.errors %}<span class="error">{{ form.temp_min.errors.0 }}</span>{% endif %}
+  </p>
+  <p>
+    <label>温度上限(°C)</label>
+    {{ form.temp_max }}
+    {% if form.temp_max.errors %}<span class="error">{{ form.temp_max.errors.0 }}</span>{% endif %}
+  </p>
+  <p>
+    <label>湿度下限(%RH)</label>
+    {{ form.humidity_min }}
+    {% if form.humidity_min.errors %}<span class="error">{{ form.humidity_min.errors.0 }}</span>{% endif %}
+  </p>
+  <p>
+    <label>湿度上限(%RH)</label>
+    {{ form.humidity_max }}
+    {% if form.humidity_max.errors %}<span class="error">{{ form.humidity_max.errors.0 }}</span>{% endif %}
+  </p>
+  <p>
+    <button type="submit">保存温湿度范围</button>
+  </p>
+</form>
+
+<div class="dash-home">
+  <section class="dash-quick-section" aria-labelledby="dash-quick-heading">
+    <h3 id="dash-quick-heading">快捷入口</h3>
+    <nav class="dash-quick-grid" aria-label="快捷入口">
+      <a href="{% url 'community_core:household_announcement_list' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9v6a1 1 0 001 1h2l5 4V4L7 8H5a1 1 0 00-1 1z"/>
+          <path d="M15 9a3 3 0 010 6"/>
+        </svg>
+        <span class="dash-quick-tile-label">查看公告</span>
+      </a>
+      <a href="{% url 'property_fees:household_bill_list' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <path d="M14 2v6h6"/>
+          <path d="M8 13h8M8 17h6"/>
+        </svg>
+        <span class="dash-quick-tile-label">我的账单</span>
+      </a>
+      <a href="{% url 'repair:household_repair_create' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span class="dash-quick-tile-label">我要报修</span>
+      </a>
+      <a href="{% url 'community_core:household_neighborhood_feed' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+          <path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        <span class="dash-quick-tile-label">邻里圈动态</span>
+      </a>
+      <a href="{% url 'community_core:household_profile_index' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span class="dash-quick-tile-label">个人中心</span>
+      </a>
+    </nav>
+  </section>
+</div>
+
+<script>
+(function(){
+  const url = "{% url 'accounts:household_current_sensor' %}";
+  const intervalMs = 5000; // 每隔5秒拉取一次
+
+  function setText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  async function refresh() {
+    try {
+      const resp = await fetch(url, { credentials: "same-origin", headers: { "X-Requested-With": "XMLHttpRequest" } });
+      if (!resp.ok) return;
+      const data = await resp.json();
+
+      const t = Number(data.current_temp);
+      const h = Number(data.current_humidity);
+      if (!Number.isNaN(t)) setText("current_temp_display", t.toFixed(1) + "°C");
+      if (!Number.isNaN(h)) setText("current_humidity_display", h.toFixed(1) + "%RH");
+
+      if (typeof data.temp_advice === "string") setText("temp_advice_display", data.temp_advice);
+      if (typeof data.humidity_advice === "string") setText("humidity_advice_display", data.humidity_advice);
+    } catch (e) {
+      // 轮询失败不影响页面，其它功能仍可正常使用
+    }
+  }
+
+  refresh();
+  setInterval(refresh, intervalMs);
+})();
+</script>
 {% endblock %}

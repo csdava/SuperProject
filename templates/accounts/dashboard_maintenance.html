@@ -2,15 +2,52 @@
 {% block title %}维修工作台 - 邻里圈{% endblock %}
 
 {% block maintenance_content %}
-<h2>欢迎，{{ user.username }}</h2>
-<p style="color:#7f8c8d; margin-bottom:1rem;">您已以「维修人员」身份登录，请从左侧菜单进入各功能。</p>
+<div class="dash-home">
+  <header class="dash-home-header">
+    <h2>欢迎回来，{{ user.username }}</h2>
+    <p class="dash-home-lead">您已以维修人员身份登录，可通过下方快捷入口或左侧菜单进入各功能。</p>
+  </header>
 
-<h3>快捷入口</h3>
-<ul>
-  <li><a href="{% url 'repair:maintenance_order_list' %}">我的工单</a></li>
-  <li><a href="{% url 'repair:maintenance_available_orders' %}">可接单工单</a></li>
-  <li><a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a></li>
-  <li><a href="{% url 'repair:maintenance_inspection_list' %}">巡检任务</a></li>
-  <li><a href="{% url 'repair:maintenance_profile_index' %}">个人中心</a></li>
-</ul>
+  <section class="dash-quick-section" aria-labelledby="dash-quick-heading">
+    <h3 id="dash-quick-heading">快捷入口</h3>
+    <nav class="dash-quick-grid" aria-label="快捷入口">
+      <a href="{% url 'repair:maintenance_order_list' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 6h11M9 12h11M9 18h11"/>
+          <circle cx="5" cy="6" r="1.25" fill="currentColor" stroke="none"/>
+          <circle cx="5" cy="12" r="1.25" fill="currentColor" stroke="none"/>
+          <circle cx="5" cy="18" r="1.25" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="dash-quick-tile-label">我的工单</span>
+      </a>
+      <a href="{% url 'repair:maintenance_available_orders' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <span class="dash-quick-tile-label">可接单工单</span>
+      </a>
+      <a href="{% url 'repair:maintenance_order_stats' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 20V10M12 20V4M6 20v-6"/>
+        </svg>
+        <span class="dash-quick-tile-label">工单统计</span>
+      </a>
+      <a href="{% url 'repair:maintenance_inspection_list' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/>
+          <path d="M15 2H9a1 1 0 00-1 1v2h8V3a1 1 0 00-1-1z"/>
+          <path d="M9 14h6M9 10h6"/>
+        </svg>
+        <span class="dash-quick-tile-label">巡检任务</span>
+      </a>
+      <a href="{% url 'repair:maintenance_profile_index' %}" class="dash-quick-tile">
+        <svg class="dash-quick-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span class="dash-quick-tile-label">个人中心</span>
+      </a>
+    </nav>
+  </section>
+</div>
 {% endblock %}

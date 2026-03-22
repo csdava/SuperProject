@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% block html_class %}app-dashboard-shell-html{% endblock %}
+{% block body_class %}app-dashboard-shell{% endblock %}
 {% block title %}维修工作台 - 邻里圈{% endblock %}
 
 {% block content %}
@@ -9,35 +11,35 @@
       <span class="admin-user">{{ user.username }}</span>
     </div>
     <nav class="admin-nav">
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">工作台</div>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>工作台</summary>
         <ul>
           <li><a href="{% url 'accounts:dashboard_maintenance' %}">首页</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">我的工单</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>我的工单</summary>
         <ul>
           <li><a href="{% url 'repair:maintenance_order_list' %}">工单列表</a></li>
           <li><a href="{% url 'repair:maintenance_order_stats' %}">工单统计</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">接单处理</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>接单处理</summary>
         <ul>
           <li><a href="{% url 'repair:maintenance_accept_settings' %}">自动接单设置</a></li>
           <li><a href="{% url 'repair:maintenance_available_orders' %}">可接单工单</a></li>
           <li><a href="{% url 'repair:maintenance_overdue_list' %}">工单超时提醒</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">巡检任务</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>巡检任务</summary>
         <ul>
           <li><a href="{% url 'repair:maintenance_inspection_list' %}">巡检列表</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">个人中心</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>个人中心</summary>
         <ul>
           <li><a href="{% url 'repair:maintenance_profile_index' %}">个人中心</a></li>
           <li><a href="{% url 'repair:maintenance_schedule_list' %}">工作排班</a></li>
@@ -45,19 +47,25 @@
           <li><a href="{% url 'repair:maintenance_cert_list' %}">技能认证</a></li>
           <li><a href="{% url 'repair:maintenance_training_list' %}">培训资料</a></li>
         </ul>
-      </div>
+      </details>
     </nav>
   </aside>
   <section class="admin-content">
     {% block maintenance_content %}{% endblock %}
   </section>
 </div>
+{% endblock %}
+{% block extra_js %}
 <script>
 (function(){
   var path = window.location.pathname;
   document.querySelectorAll('.maintenance-sidebar .admin-nav a').forEach(function(a){
     var href = a.getAttribute('href');
-    if (href && path.indexOf(href) === 0) a.classList.add('active');
+    if (href && path.indexOf(href) === 0) {
+      a.classList.add('active');
+      var det = a.closest('details.admin-nav-group');
+      if (det) det.open = true;
+    }
   });
 })();
 </script>

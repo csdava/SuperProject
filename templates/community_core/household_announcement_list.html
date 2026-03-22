@@ -2,15 +2,21 @@
 {% block title %}社区公告 - 邻里圈{% endblock %}
 {% block household_content %}
 <h2>社区公告</h2>
-<ul>
+
+<ul class="hh-stream-list">
   {% for a in announcements %}
-  <li>
-    {% if a.is_pinned %}[置顶] {% endif %}
-    <a href="{% url 'community_core:household_announcement_detail' a.pk %}">{{ a.title }}</a>
-    <span style="color:#666;">{{ a.published_at|date:"Y-m-d H:i" }}</span>
+  <li class="hh-stream-item">
+    <span class="hh-stream-badge">{% if a.is_pinned %}[置顶] {% endif %}[公告]</span>
+    {% if a.title %}<strong class="hh-stream-title">{{ a.title }}</strong>{% endif %}
+    <div class="hh-stream-body">{{ a.content|linebreaks }}</div>
+    <p class="hh-stream-meta">
+      {% if a.created_by %}{{ a.created_by.username }}{% else %}物业{% endif %}
+      · {{ a.published_at|date:"Y-m-d H:i" }}
+      <a href="{% url 'community_core:household_announcement_detail' a.pk %}">查看</a>
+    </p>
   </li>
   {% empty %}
-  <li>暂无公告。</li>
+  <li class="hh-stream-empty">暂无公告。</li>
   {% endfor %}
 </ul>
 {% endblock household_content %}

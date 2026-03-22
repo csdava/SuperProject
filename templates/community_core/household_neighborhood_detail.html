@@ -3,7 +3,10 @@
 {% block household_content %}
 <h2>{% if post.title %}{{ post.title }}{% else %}帖子详情{% endif %}</h2>
 <p class="admin-toolbar"><a href="{% url 'community_core:household_neighborhood_feed' %}">← 邻里圈</a></p>
-<p><span style="color:#888;">[{{ post.get_post_type_display }}]</span> {{ post.user.username }} · {{ post.created_at|date:"Y-m-d H:i" }}</p>
-<div>{{ post.content|linebreaks }}</div>
-{% if post.contact_info %}<p style="color:#666;">联系方式：{{ post.contact_info }}</p>{% endif %}
+<p class="hh-stream-detail-meta">
+  <span class="hh-stream-badge">[{{ post.get_post_type_display }}]</span>
+  {{ post.user.username }} · {{ post.created_at|date:"Y-m-d H:i" }}
+</p>
+<div class="hh-stream-detail-body">{{ post.content|linebreaks }}</div>
+{% if post.contact_info %}<p class="hh-stream-contact">联系方式：{{ post.contact_info }}</p>{% endif %}
 {% endblock household_content %}

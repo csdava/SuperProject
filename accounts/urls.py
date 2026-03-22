@@ -8,6 +8,11 @@ urlpatterns = [
     path("login/form/", views.login_form, name="login_form"),
     path("logout/", views.logout_view, name="logout"),
     path("dashboard/household/", views.dashboard_household, name="dashboard_household"),
+    path(
+        "dashboard/household/current-sensor/",
+        views.household_current_sensor,
+        name="household_current_sensor",
+    ),
     path("dashboard/maintenance/", views.dashboard_maintenance, name="dashboard_maintenance"),
     path("dashboard/admin/", views.dashboard_admin, name="dashboard_admin"),
     # 系统管理（仅管理员）

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% block html_class %}app-dashboard-shell-html{% endblock %}
+{% block body_class %}app-dashboard-shell{% endblock %}
 {% block title %}户主工作台 - 邻里圈{% endblock %}
 
 {% block content %}
@@ -9,67 +11,67 @@
       <span class="admin-user">{{ user.username }}</span>
     </div>
     <nav class="admin-nav">
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">工作台</div>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>工作台</summary>
         <ul>
           <li><a href="{% url 'accounts:dashboard_household' %}">首页</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">社区公告</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>社区公告</summary>
         <ul>
           <li><a href="{% url 'community_core:household_announcement_list' %}">公告列表</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">费用中心</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>费用中心</summary>
         <ul>
           <li><a href="{% url 'property_fees:household_bill_list' %}">我的账单</a></li>
           <li><a href="{% url 'property_fees:household_payment_list' %}">缴费记录</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">报事报修</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>报事报修</summary>
         <ul>
           <li><a href="{% url 'repair:household_repair_list' %}">我的报修</a></li>
           <li><a href="{% url 'repair:household_repair_create' %}">我要报修</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">访客管理</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>访客管理</summary>
         <ul>
           <li><a href="{% url 'visitor_access:household_invite_list' %}">访客邀请</a></li>
           <li><a href="{% url 'visitor_access:household_invite_create' %}">邀请访客</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">车辆管理</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>车辆管理</summary>
         <ul>
           <li><a href="{% url 'vehicle_mgmt:household_vehicle_list' %}">我的车辆</a></li>
           <li><a href="{% url 'vehicle_mgmt:household_parking_list' %}">车位状态</a></li>
           <li><a href="{% url 'vehicle_mgmt:household_temp_request_list' %}">临停申请</a></li>
           <li><a href="{% url 'vehicle_mgmt:household_violation_list' %}">违规记录</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">社区服务</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>社区服务</summary>
         <ul>
           <li><a href="{% url 'community_core:household_service_booking_list' %}">家政预约</a></li>
           <li><a href="{% url 'community_core:household_parcel_list' %}">快递代收</a></li>
           <li><a href="{% url 'community_core:household_lost_report_list' %}">物品报失</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">邻里圈</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>邻里圈</summary>
         <ul>
           <li><a href="{% url 'community_core:household_neighborhood_feed' %}">动态</a></li>
           <li><a href="{% url 'community_core:household_neighborhood_create' %}">发布动态</a></li>
           <li><a href="{% url 'community_core:household_neighborhood_my_posts' %}">我的发布</a></li>
           <li><a href="{% url 'community_core:household_activity_list' %}">社区活动</a></li>
         </ul>
-      </div>
-      <div class="admin-nav-group">
-        <div class="admin-nav-title">个人中心</div>
+      </details>
+      <details class="admin-nav-group">
+        <summary class="admin-nav-summary"><span class="admin-nav-chevron" aria-hidden="true"></span>个人中心</summary>
         <ul>
           <li><a href="{% url 'community_core:household_profile_index' %}">个人中心</a></li>
           <li><a href="{% url 'community_core:household_personal_info' %}">个人信息</a></li>
@@ -79,19 +81,25 @@
           <li><a href="{% url 'community_core:household_messages' %}">消息通知</a></li>
           <li><a href="{% url 'community_core:household_feedback' %}">意见反馈</a></li>
         </ul>
-      </div>
+      </details>
     </nav>
   </aside>
   <section class="admin-content">
     {% block household_content %}{% endblock %}
   </section>
 </div>
+{% endblock %}
+{% block extra_js %}
 <script>
 (function(){
   var path = window.location.pathname;
   document.querySelectorAll('.household-sidebar .admin-nav a').forEach(function(a){
     var href = a.getAttribute('href');
-    if (href && path.indexOf(href) === 0) a.classList.add('active');
+    if (href && path.indexOf(href) === 0) {
+      a.classList.add('active');
+      var det = a.closest('details.admin-nav-group');
+      if (det) det.open = true;
+    }
   });
 })();
 </script>

@@ -3,6 +3,28 @@
 {% block admin_content %}
 <h2>用户账号管理</h2>
 
+{# 快速分类按钮：身份 + 审批状态，与查询表单分开 #}
+<div class="admin-toolbar">
+  <div style="margin-bottom:0.5rem;">
+    <strong>按身份：</strong>
+    <a href="?{% if is_approved_filter %}is_approved={{ is_approved_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}"
+       {% if not role_filter %}style="font-weight:bold;"{% endif %}>全部</a>
+    {% for value, label in role_choices %}
+      <a href="?role={{ value }}{% if is_approved_filter %}&is_approved={{ is_approved_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}"
+         {% if role_filter == value %}style="font-weight:bold;"{% endif %}>{{ label }}</a>
+    {% endfor %}
+  </div>
+  <div>
+    <strong>按审批：</strong>
+    <a href="?{% if role_filter %}role={{ role_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}"
+       {% if not is_approved_filter %}style="font-weight:bold;"{% endif %}>全部</a>
+    <a href="?is_approved=0{% if role_filter %}&role={{ role_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}"
+       {% if is_approved_filter == '0' %}style="font-weight:bold;"{% endif %}>未审批</a>
+    <a href="?is_approved=1{% if role_filter %}&role={{ role_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}"
+       {% if is_approved_filter == '1' %}style="font-weight:bold;"{% endif %}>已审批</a>
+  </div>
+</div>
+
 <form method="get" class="filter-form">
   <label>身份</label>
   <select name="role">
@@ -22,9 +44,17 @@
   <button type="submit">查询</button>
 </form>
 
-<table class="simple-table">
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="bulk_approve">
+  {# 将当前筛选条件一并提交，以便批量操作后还能保留筛选 #}
+  <input type="hidden" name="role" value="{{ role_filter }}">
+  <input type="hidden" name="is_approved" value="{{ is_approved_filter }}">
+  <input type="hidden" name="q" value="{{ q }}">
+  <table class="simple-table">
   <thead>
     <tr>
+      <th style="width:2rem;"><input type="checkbox" onclick="document.querySelectorAll('.user-select').forEach(cb => cb.checked = this.checked);"></th>
       <th>用户名</th>
       <th>身份</th>
       <th>已审批</th>
@@ -34,16 +64,22 @@
   <tbody>
     {% for u in page_obj %}
     <tr>
+      <td><input type="checkbox" name="user_ids" value="{{ u.id }}" class="user-select"></td>
       <td>{{ u.username }}</td>
       <td>{{ u.profile.get_role_display }}</td>
       <td>{% if u.profile.is_approved %}是{% else %}否{% endif %}</td>
       <td><a href="{% url 'accounts:admin_user_edit' u.id %}">编辑</a></td>
     </tr>
     {% empty %}
-    <tr><td colspan="4">暂无用户。</td></tr>
+    <tr><td colspan="5">暂无用户。</td></tr>
     {% endfor %}
   </tbody>
-</table>
+  </table>
+
+  <p class="admin-toolbar">
+    <button type="submit">批量通过审批</button>
+  </p>
+</form>
 
 {% if page_obj.has_other_pages %}
 <p class="admin-toolbar">
