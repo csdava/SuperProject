@@ -1,0 +1,241 @@
+{% extends "accounts/base_admin.html" %}
+
+{% block title %}上传图片检测 - 设施管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-upload"></i> 上传图片进行设施检测
+    </h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">上传设施图片</h6>
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="imageInput">选择图片文件</label>
+                            <input type="file" class="form-control-file" id="imageInput" name="image"
+                                   accept="image/*" required>
+                            <small class="form-text text-muted">
+                                支持 JPG、PNG 格式，建议图片尺寸不小于 640x640
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confThreshold">置信度阈值</label>
+                            <input type="range" class="custom-range" id="confThreshold"
+                                   name="conf_threshold" min="0.1" max="0.9" step="0.05" value="0.25">
+                            <span id="confValue">0.25</span>
+                            <small class="form-text text-muted">
+                                阈值越低，检测到的目标越多，但可能包含误检
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="locationRemark">位置备注（可选）</label>
+                            <input type="text" class="form-control" id="locationRemark"
+                                   name="location_remark" placeholder="如: 1号楼北侧健身区">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-search"></i> 开始检测
+                        </button>
+                        <a href="{% url 'facility_mgmt:facility_dashboard' %}" class="btn btn-secondary">
+                            返回
+                        </a>
+                    </form>
+
+                    <!-- 加载指示器 -->
+                    <div id="loadingSpinner" class="mt-4 text-center" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">处理中...</span>
+                        </div>
+                        <p class="mt-2 text-muted">正在检测，请稍候...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">支持检测的设施</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="media mb-3">
+                            <i class="fas fa-chair fa-2x text-secondary mr-3"></i>
+                            <div class="media-body">
+                                <h6 class="mt-1 mb-1">公共座椅</h6>
+                                <small class="text-muted">bench, seat</small>
+                            </div>
+                        </li>
+                        <li class="media mb-3">
+                            <i class="fas fa-lightbulb fa-2x text-secondary mr-3"></i>
+                            <div class="media-body">
+                                <h6 class="mt-1 mb-1">照明灯</h6>
+                                <small class="text-muted">lighting, lamp</small>
+                            </div>
+                        </li>
+                        <li class="media mb-3">
+                            <i class="fas fa-bolt fa-2x text-secondary mr-3"></i>
+                            <div class="media-body">
+                                <h6 class="mt-1 mb-1">电表</h6>
+                                <small class="text-muted">electricity meter</small>
+                            </div>
+                        </li>
+                        <li class="media mb-3">
+                            <i class="fas fa-tint fa-2x text-secondary mr-3"></i>
+                            <div class="media-body">
+                                <h6 class="mt-1 mb-1">水表</h6>
+                                <small class="text-muted">water meter</small>
+                            </div>
+                        </li>
+                        <li class="media mb-3">
+                            <i class="fas fa-street-view fa-2x text-secondary mr-3"></i>
+                            <div class="media-body">
+                                <h6 class="mt-1 mb-1">路灯</h6>
+                                <small class="text-muted">street light</small>
+                            </div>
+                        </li>
+                        <li class="media">
+                            <i class="fas fa-road fa-2x text-secondary mr-3"></i>
+                            <div class="media-body">
+                                <h6 class="mt-1 mb-1">减速带</h6>
+                                <small class="text-muted">speed bump</small>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 检测结果区域 -->
+    <div id="resultsArea" class="row mt-4" style="display: none;">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">检测结果</h6>
+                </div>
+                <div class="card-body">
+                    <div id="resultsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('confThreshold').addEventListener('input', function(e) {
+    document.getElementById('confValue').textContent = e.target.value;
+});
+
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const resultsArea = document.getElementById('resultsArea');
+
+    submitBtn.disabled = true;
+    loadingSpinner.style.display = 'block';
+    resultsArea.style.display = 'none';
+
+    try {
+        const response = await fetch('{% url "facility_mgmt:api_detect" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        });
+
+        const data = await response.json();
+        loadingSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+
+        if (data.success) {
+            displayResults(data);
+        } else {
+            alert('检测失败: ' + data.error);
+        }
+    } catch (error) {
+        loadingSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+        alert('请求失败: ' + error.message);
+    }
+});
+
+function displayResults(data) {
+    const resultsArea = document.getElementById('resultsArea');
+    const resultsContent = document.getElementById('resultsContent');
+
+    let html = `
+        <div class="alert alert-success">
+            <h5>检测完成!</h5>
+            <p>检测到 <strong>${data.total_detected}</strong> 个设施</p>
+            <p>处理时间: ${data.processing_time_ms} ms</p>
+            <p>图片ID: ${data.image_id}</p>
+        </div>
+    `;
+
+    if (data.detections && data.detections.length > 0) {
+        html += `
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>设施类别</th>
+                            <th>置信度</th>
+                            <th>损坏等级</th>
+                            <th>预计剩余寿命</th>
+                            <th>损坏原因</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        data.detections.forEach(function(det) {
+            const damageBadgeClass = {
+                'normal': 'badge-success',
+                'minor': 'badge-warning',
+                'moderate': 'badge-danger',
+                'severe': 'badge-danger'
+            }[det.damage_level] || 'badge-secondary';
+
+            html += `
+                <tr>
+                    <td>${det.category_display}</td>
+                    <td>${(det.confidence * 100).toFixed(1)}%</td>
+                    <td><span class="badge ${damageBadgeClass}">${det.damage_level}</span></td>
+                    <td>${det.estimated_lifespan_days || 'N/A'} 天</td>
+                    <td>${(det.damage_reasons || []).join(', ') || '无'}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="alert alert-warning">
+                未检测到目标设施，请尝试上传其他图片或降低置信度阈值
+            </div>
+        `;
+    }
+
+    resultsContent.innerHTML = html;
+    resultsArea.style.display = 'block';
+}
+</script>
+{% endblock %}

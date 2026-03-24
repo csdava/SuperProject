@@ -16,7 +16,7 @@ urlpatterns = [
     # path("security/", include("security.urls")),
     # path("services/", include("life_services.urls")),
     path("vehicle/", include("vehicle_mgmt.urls")),
-    # path("facility/", include("facility_mgmt.urls")),
+    path("facility/", include("facility_mgmt.urls")),
 ]
 
 if settings.DEBUG:

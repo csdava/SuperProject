@@ -1,0 +1,113 @@
+{% extends "accounts/base_admin.html" %}
+
+{% block title %}训练管理 - 设施管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-brain"></i> 模型训练管理
+    </h1>
+
+    <!-- 统计卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                待审核图片</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_images }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                已验证图片</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ verified_images }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作说明 -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">训练流程</h6>
+        </div>
+        <div class="card-body">
+            <ol class="mb-0">
+                <li class="mb-2"><strong>采集图片:</strong> 通过摄像头采集或手动上传社区设施图片</li>
+                <li class="mb-2"><strong>自动标注:</strong> 运行 <code>python manage.py auto_annotate --all-pending</code> 自动标注</li>
+                <li class="mb-2"><strong>审核标注:</strong> 在 Django Admin 中审核标注结果</li>
+                <li class="mb-2"><strong>开始训练:</strong> 运行 <code>python manage.py train_facility_model --dataset-version v1 --epochs 100</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 训练历史 -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">训练历史</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>任务名称</th>
+                            <th>基础模型</th>
+                            <th>状态</th>
+                            <th>mAP50</th>
+                            <th>mAP50-95</th>
+                            <th>创建时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in training_jobs %}
+                        <tr>
+                            <td>{{ job.id }}</td>
+                            <td>{{ job.name }}</td>
+                            <td>{{ job.base_model }}</td>
+                            <td>
+                                {% if job.status == 'pending' %}
+                                    <span class="badge badge-secondary">待训练</span>
+                                {% elif job.status == 'training' %}
+                                    <span class="badge badge-primary">训练中</span>
+                                {% elif job.status == 'completed' %}
+                                    <span class="badge badge-success">已完成</span>
+                                {% elif job.status == 'failed' %}
+                                    <span class="badge badge-danger">失败</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ job.map50|default:"-" }}</td>
+                            <td>{{ job.map50_95|default:"-" }}</td>
+                            <td>{{ job.created_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">暂无训练记录</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

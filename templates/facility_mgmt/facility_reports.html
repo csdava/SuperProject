@@ -1,0 +1,59 @@
+{% extends "accounts/base_admin.html" %}
+
+{% block title %}设施报告 - 设施管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-chart-bar"></i> 设施状况报告
+    </h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">历史报告</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>报告日期</th>
+                            <th>检测设施总数</th>
+                            <th>损坏设施数</th>
+                            <th>平均剩余寿命</th>
+                            <th>维护建议</th>
+                            <th>生成时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td>{{ report.report_date }}</td>
+                            <td>{{ report.total_facilities_detected }}</td>
+                            <td>{{ report.total_damaged }}</td>
+                            <td>{{ report.avg_estimated_lifespan_days|default:"N/A" }} 天</td>
+                            <td><small>{{ report.recommendations|truncatechars:50 }}</small></td>
+                            <td>{{ report.created_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">暂无报告</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">获取实时报告</h6>
+        </div>
+        <div class="card-body">
+            <p>通过 API 获取实时汇总报告:</p>
+            <pre class="bg-dark text-light p-3 rounded"><code>GET /facility/api/report/?start_date=2024-01-01&end_date=2024-01-31</code></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

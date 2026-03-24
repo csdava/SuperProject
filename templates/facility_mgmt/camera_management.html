@@ -1,0 +1,76 @@
+{% extends "accounts/base_admin.html" %}
+
+{% block title %}摄像头管理 - 设施管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-video"></i> 摄像头管理
+    </h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">已配置的摄像头</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>类型</th>
+                            <th>地址</th>
+                            <th>位置备注</th>
+                            <th>状态</th>
+                            <th>采集间隔</th>
+                            <th>最后采集</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for camera in cameras %}
+                        <tr>
+                            <td>{{ camera.id }}</td>
+                            <td>{{ camera.name }}</td>
+                            <td>{{ camera.get_camera_type_display }}</td>
+                            <td><small>{{ camera.url }}</small></td>
+                            <td>{{ camera.location_remark|default:"-" }}</td>
+                            <td>
+                                {% if camera.is_active %}
+                                    <span class="badge badge-success">启用</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">禁用</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ camera.capture_interval }}秒</td>
+                            <td>{{ camera.last_capture_at|date:"Y-m-d H:i"|default:"从未" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">暂无摄像头配置</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted small">
+                * 摄像头配置需要在 Django Admin 中添加<br>
+                * 地址支持 RTSP 流 (rtsp://) 或 HTTP API (http://)
+            </p>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">API 调用示例</h6>
+        </div>
+        <div class="card-body">
+            <p>通过摄像头抓拍并检测:</p>
+            <pre class="bg-dark text-light p-3 rounded"><code>POST /facility/api/camera/capture/
+Content-Type: application/json
+
+{"camera_id": 1}</code></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
