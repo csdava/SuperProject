@@ -1,0 +1,6 @@
+public_seat
+lighting
+electricity_meter
+water_meter
+street_light
+speed_bump

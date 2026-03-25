@@ -1,0 +1,19 @@
+# 设施检测数据集配置
+# 路径: DjangoProject333/facility_dataset/
+
+path: D:/User/Documents/PycharmProjects/DjangoProject333/facility_dataset
+train: images/train
+val: images/val
+test: images/test
+
+# 类别数量
+nc: 6
+
+# 类别名称
+names:
+  0: public_seat      # 公共座椅
+  1: lighting         # 照明灯
+  2: electricity_meter  # 电表
+  3: water_meter     # 水表
+  4: street_light    # 路灯
+  5: speed_bump      # 减速带
