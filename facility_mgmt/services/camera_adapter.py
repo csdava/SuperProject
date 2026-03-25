@@ -34,7 +34,19 @@ class CameraAdapter:
         """
         self.url = str(url)
         self.camera_index: Optional[int] = None
-        self.camera_type = self._detect_camera_type(self.url) if camera_type == 'auto' else camera_type
+        if camera_type == 'auto':
+            self.camera_type = self._detect_camera_type(self.url)
+        else:
+            self.camera_type = camera_type
+            # 如果显式指定为 usb，解析索引
+            if self.camera_type == 'usb' or camera_type == 'usb':
+                if url.isdigit():
+                    self.camera_index = int(url)
+                elif url.startswith('usb://'):
+                    try:
+                        self.camera_index = int(url.replace('usb://', ''))
+                    except ValueError:
+                        pass
         self._cap = None
         self._is_connected = False
 
